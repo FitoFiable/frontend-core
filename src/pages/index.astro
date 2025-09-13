@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { Button } from '@/components/ui/button';
+import Test from '@/components/protected/test';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
@@ -9,5 +10,6 @@ import { Button } from '@/components/ui/button';
 <Layout>
 	<div class="grid place-items-center h-screen content-center">
 		<img src="/fitofiable/fito.webp" alt="Fitofiable Logo" class="w-40 h-40 object-cover">
+		<Test client:load />
 	</div>
 </Layout>
