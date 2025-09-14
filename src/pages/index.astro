@@ -1,15 +1,56 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { Button } from '@/components/ui/button';
-import Test from '@/components/protected/test';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Redirect to language-specific route based on localStorage or browser detection
 ---
 
-<Layout>
-	<div class="grid place-items-center h-screen content-center">
-		<img src="/fitofiable/fito.webp" alt="Fitofiable Logo" class="w-40 h-40 object-cover">
-		<Test client:load />
-	</div>
-</Layout>
+<script>
+  // Client-side redirect based on language detection
+  if (typeof window !== 'undefined') {
+    // Detect browser language preference
+    function detectBrowserLanguage() {
+      const supportedLanguages = ['en', 'es', 'fr', 'de', 'it', 'pt'];
+      const browserLanguages = navigator.languages || [navigator.language];
+      
+      // Check each browser language against our supported languages
+      for (const browserLang of browserLanguages) {
+        // Try exact match first (e.g., 'en-US' -> 'en')
+        const exactMatch = supportedLanguages.find(lang => 
+          browserLang.toLowerCase().startsWith(lang.toLowerCase())
+        );
+        if (exactMatch) return exactMatch;
+        
+        // Try language code only (e.g., 'en' from 'en-US')
+        const langCode = browserLang.split('-')[0].toLowerCase();
+        const codeMatch = supportedLanguages.find(lang => 
+          lang.toLowerCase() === langCode
+        );
+        if (codeMatch) return codeMatch;
+      }
+      
+      // Default to English if no match found
+      return 'en';
+    }
+    
+    // Get language (saved or detected from browser)
+    const savedLanguage = localStorage.getItem('language');
+    const isValidLanguage = savedLanguage && ['en', 'es', 'fr', 'de', 'it', 'pt'].includes(savedLanguage);
+    
+    let language;
+    if (isValidLanguage) {
+      language = savedLanguage;
+    } else {
+      // If no valid saved language, detect from browser
+      language = detectBrowserLanguage();
+      // Save the detected language for future visits
+      localStorage.setItem('language', language);
+    }
+    
+    window.location.href = `/${language}`;
+  }
+</script>
+
+<div class="grid place-items-center h-screen content-center">
+  <div class="text-center">
+    <img src="/fitofiable/fito.webp" alt="Fitofiable Logo" class="w-40 h-40 object-cover mx-auto mb-4">
+    <p class="text-lg">Redirecting...</p>
+  </div>
+</div>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { userData } from "@/lib/core-api";
 import { Button } from "@/components/ui/button";
 
-export default function Test() {
+export default function LoginLogout({ loginText, logoutText }: { loginText: string, logoutText: string }) {
 
     const [user, setUser] = useState<userData | null>(null);
 
@@ -33,23 +33,23 @@ export default function Test() {
         <div className="flex flex-col items-center justify-center  gap-4 mt-5">
             {user ? 
                 <>
-                    <p className="text-lg font-medium">User: {user.userID}</p>
+                    <p className="text-lg font-medium"> {user.userID}</p>
                     <Button 
                         className="w-32"
                         onClick={() => {
-                            window.location.href = "/logout";
+                            window.location.href = "/logout?redirect_to=/&lang=" + localStorage.getItem('language');
                         }}
                     >
-                        Logout
+                        {logoutText}
                     </Button>
                 </> : 
                 <Button
                     className="w-32" 
                     onClick={() => {
-                        window.location.href = "/login";
+                        window.location.href = "/login?redirect_to=/&lang=" + localStorage.getItem('language');
                     }}
                 >
-                    Login
+                    {loginText}
                 </Button>
             }
         </div>

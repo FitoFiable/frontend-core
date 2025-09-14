@@ -1,5 +1,7 @@
 ---
 import "../styles/global.css";
+import ThemeToggle from "../components/general/ThemeToggle.tsx";
+import LanguageSelector from "../components/general/LanguageSelector.tsx";
 ---
 
 <!doctype html>
@@ -9,9 +11,13 @@ import "../styles/global.css";
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>Fito Fiable</title>
 	</head>
-	<body>
+	<body class="">
+		<div class="fixed top-4 right-4 z-50 flex gap-2">
+			<LanguageSelector client:load />
+			<ThemeToggle client:load />
+		</div>
 		<slot />
 	</body>
 </html>

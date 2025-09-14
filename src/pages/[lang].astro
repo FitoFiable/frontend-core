@@ -1,0 +1,54 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Button } from '@/components/ui/button';
+import LoginLogout from '@/components/general/LoginLogout';
+
+// Import all language translations
+import { homePage as enHomePage } from '../i18n/en/homePage';
+import { homePage as esHomePage } from '../i18n/es/homePage';
+import { homePage as frHomePage } from '../i18n/fr/homePage';
+import { homePage as deHomePage } from '../i18n/de/homePage';
+import { homePage as itHomePage } from '../i18n/it/homePage';
+import { homePage as ptHomePage } from '../i18n/pt/homePage';
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'es' } },
+    { params: { lang: 'fr' } },
+    { params: { lang: 'de' } },
+    { params: { lang: 'it' } },
+    { params: { lang: 'pt' } },
+  ];
+}
+
+const { lang } = Astro.params;
+
+// Get translations based on language
+const getTranslations = (language: string) => {
+  switch (language) {
+    case 'es':
+      return esHomePage;
+    case 'fr':
+      return frHomePage;
+    case 'de':
+      return deHomePage;
+    case 'it':
+      return itHomePage;
+    case 'pt':
+      return ptHomePage;
+    case 'en':
+    default:
+      return enHomePage;
+  }
+};
+
+const translations = getTranslations(lang || 'en');
+---
+
+<Layout>
+	<div class="grid place-items-center h-screen content-center">
+		<img src="/fitofiable/fito.webp" alt="Fitofiable Logo" class="w-40 h-40 object-cover">
+		<LoginLogout client:load loginText={translations.loginText} logoutText={translations.logoutText} />
+	</div>
+</Layout>
