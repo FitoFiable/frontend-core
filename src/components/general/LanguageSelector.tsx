@@ -8,9 +8,29 @@ export default function LanguageSelector() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Get current language (saved or detected from browser)
-    const currentLanguageCode = getCurrentLanguage();
+    // First, try to detect language from URL
+    const detectLanguageFromUrl = (): LanguageCode => {
+      const pathSegments = window.location.pathname.split('/').filter(segment => segment !== '');
+      const langFromUrl = pathSegments[0];
+      const supportedCodes = languages.map(lang => lang.code);
+      
+      if (supportedCodes.includes(langFromUrl as LanguageCode)) {
+        return langFromUrl as LanguageCode;
+      }
+      return 'en';
+    };
+
+    // Get language from URL first, then fallback to saved/detected language
+    const urlLanguage = detectLanguageFromUrl();
+    const currentLanguageCode = urlLanguage !== 'en' ? urlLanguage : getCurrentLanguage();
     const language = getLanguageByCode(currentLanguageCode);
+    
+    // Save the detected language to localStorage
+    localStorage.setItem('language', currentLanguageCode);
+    
+    // Update the HTML lang attribute
+    document.documentElement.lang = currentLanguageCode;
+    
     setSelectedLanguage(language);
   }, []);
 
@@ -20,6 +40,9 @@ export default function LanguageSelector() {
     
     // Save to localStorage
     localStorage.setItem('language', language.code);
+    
+    // Update the HTML lang attribute
+    document.documentElement.lang = language.code;
     
     // Update URL to new language path
     const currentPath = window.location.pathname;
