@@ -1,8 +1,0 @@
----
-import { API_URL } from "astro:env/client";
-import Redirect from "@/components/general/Redirect";
-
----
-<html>
-    <Redirect client:only="react" to={`${API_URL}/login`} />
-</html>

@@ -1,15 +1,15 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from '@/layouts/Layout.astro';
 import { Button } from '@/components/ui/button';
 import LoginLogout from '@/components/general/LoginLogout';
 
 // Import all language translations
-import { homePage as enHomePage } from '../i18n/en/homePage';
-import { homePage as esHomePage } from '../i18n/es/homePage';
-import { homePage as frHomePage } from '../i18n/fr/homePage';
-import { homePage as deHomePage } from '../i18n/de/homePage';
-import { homePage as itHomePage } from '../i18n/it/homePage';
-import { homePage as ptHomePage } from '../i18n/pt/homePage';
+import { homePage as enHomePage } from '@/i18n/en/homePage';
+import { homePage as esHomePage } from '@/i18n/es/homePage';
+import { homePage as frHomePage } from '@/i18n/fr/homePage';
+import { homePage as deHomePage } from '@/i18n/de/homePage';
+import { homePage as itHomePage } from '@/i18n/it/homePage';
+import { homePage as ptHomePage } from '@/i18n/pt/homePage';
 
 export async function getStaticPaths() {
   return [

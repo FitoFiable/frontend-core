@@ -1,0 +1,21 @@
+---
+import { API_URL } from "astro:env/client";
+import Redirect from "@/components/general/Redirect";
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'es' } },
+    { params: { lang: 'fr' } },
+    { params: { lang: 'de' } },
+    { params: { lang: 'it' } },
+    { params: { lang: 'pt' } },
+  ];
+}
+
+const { lang } = Astro.params;
+
+---
+<html>
+    <Redirect client:only="react" to={`${API_URL}/login?lang=${lang}`} />
+</html>

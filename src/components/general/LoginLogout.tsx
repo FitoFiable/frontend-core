@@ -37,7 +37,7 @@ export default function LoginLogout({ loginText, logoutText }: { loginText: stri
                     <Button 
                         className="w-32"
                         onClick={() => {
-                            window.location.href = "/logout?redirect_to=/&lang=" + localStorage.getItem('language');
+                            window.location.href = `/logout?redirect_to=${window.location.pathname}&lang=${localStorage.getItem('language')}`;
                         }}
                     >
                         {logoutText}
@@ -46,7 +46,7 @@ export default function LoginLogout({ loginText, logoutText }: { loginText: stri
                 <Button
                     className="w-32" 
                     onClick={() => {
-                        window.location.href = "/login?redirect_to=/&lang=" + localStorage.getItem('language');
+                        window.location.href = `/${localStorage.getItem('language')}/login?redirect_to=${window.location.pathname}&lang=${localStorage.getItem('language')}`;
                     }}
                 >
                     {loginText}
