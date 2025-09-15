@@ -47,12 +47,13 @@ export default function PhoneSetupAndVerify({ user, translations, onRefresh }: P
         setSubmitting(true);
         setInfoMessage("");
         try {
+            const lang = typeof window !== 'undefined' ? (localStorage.getItem('language') || 'en') : 'en';
+            const langResp = await apiSetUserLanguage(lang);
+            console.log(langResp);
             const setResp = await apiSetPhoneNumber(fullNumber);
             if (setResp.status === "OK") {
                 // Send current UI language to backend (from localStorage)
                 try {
-                    const lang = typeof window !== 'undefined' ? (localStorage.getItem('language') || 'en') : 'en';
-                    void apiSetUserLanguage(lang);
                 } catch (_e) {
                     // ignore language set errors silently
                 }

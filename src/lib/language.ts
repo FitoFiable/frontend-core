@@ -75,22 +75,3 @@ export function getLanguageByCode(code: string) {
   return supportedLanguages.find(lang => lang.code === code) || supportedLanguages[0];
 }
 
-/**
- * Listen for language changes
- * @param callback - Function to call when language changes
- * @returns Cleanup function to remove the listener
- */
-export function onLanguageChange(callback: (language: LanguageCode) => void) {
-  if (typeof window === 'undefined') return () => {};
-  
-  const handleLanguageChange = (event: CustomEvent) => {
-    void apiSetUserLanguage(event.detail.language);
-    callback(event.detail.language);
-  };
-  
-  window.addEventListener('languageChanged', handleLanguageChange as EventListener);
-  
-  return () => {
-    window.removeEventListener('languageChanged', handleLanguageChange as EventListener);
-  };
-}

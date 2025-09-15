@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getCurrentLanguage, getLanguageByCode, supportedLanguages, type LanguageCode } from '@/lib/language';
-import { apiSetUserLanguage } from '@/lib/core-api';
-
+import {apiSetUserLanguage} from '@/lib/core-api';
 const languages = supportedLanguages;
 
 export default function LanguageSelector() {
@@ -35,7 +34,7 @@ export default function LanguageSelector() {
     setSelectedLanguage(language);
   }, []);
 
-  const handleLanguageChange = (language: typeof languages[number]) => {
+  const handleLanguageChange = async (language: typeof languages[number]) => {
     setSelectedLanguage(language);
     setIsOpen(false);
     
@@ -46,7 +45,8 @@ export default function LanguageSelector() {
     document.documentElement.lang = language.code;
     
     // Persist user language preference to backend before navigation
-    void apiSetUserLanguage(language.code);
+    const langResp = await apiSetUserLanguage(language.code);
+    console.log(langResp);
     
     // Update URL to new language path
     const currentPath = window.location.pathname;
@@ -108,7 +108,7 @@ export default function LanguageSelector() {
             {languages.map((language) => (
               <button
                 key={language.code}
-                onClick={() => handleLanguageChange(language)}
+                onClick={async () => await handleLanguageChange(language)}
                 className={`w-full flex items-center justify-between px-4 py-3 text-left hover:bg-accent transition-colors duration-150 ${
                   selectedLanguage.code === language.code ? 'bg-accent/50' : ''
                 }`}
