@@ -1,5 +1,7 @@
 // Language utility functions
 
+import { apiSetUserLanguage } from "./core-api";
+
 export const supportedLanguages = [
   { code: 'en', name: 'English' },
   { code: 'es', name: 'Español' },
@@ -82,6 +84,7 @@ export function onLanguageChange(callback: (language: LanguageCode) => void) {
   if (typeof window === 'undefined') return () => {};
   
   const handleLanguageChange = (event: CustomEvent) => {
+    void apiSetUserLanguage(event.detail.language);
     callback(event.detail.language);
   };
   

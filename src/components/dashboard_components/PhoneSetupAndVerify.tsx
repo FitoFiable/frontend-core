@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import type { userData } from "@/lib/core-api";
-import { apiCreateSyncCode, apiSetPhoneNumber } from "@/lib/core-api";
+import { apiCreateSyncCode, apiSetPhoneNumber, apiSetUserLanguage } from "@/lib/core-api";
 import { Button } from "@/components/ui/button";
 
 interface PhoneSetupAndVerifyProps {
@@ -49,6 +49,13 @@ export default function PhoneSetupAndVerify({ user, translations, onRefresh }: P
         try {
             const setResp = await apiSetPhoneNumber(fullNumber);
             if (setResp.status === "OK") {
+                // Send current UI language to backend (from localStorage)
+                try {
+                    const lang = typeof window !== 'undefined' ? (localStorage.getItem('language') || 'en') : 'en';
+                    void apiSetUserLanguage(lang);
+                } catch (_e) {
+                    // ignore language set errors silently
+                }
                 const syncResp = await apiCreateSyncCode();
                 if (syncResp.status === "OK") {
                     setInfoMessage(translations.phone?.syncCodeSent || "We sent you a sync code.");

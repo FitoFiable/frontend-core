@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getCurrentLanguage, getLanguageByCode, supportedLanguages, type LanguageCode } from '@/lib/language';
+import { apiSetUserLanguage } from '@/lib/core-api';
 
 const languages = supportedLanguages;
 
@@ -44,6 +45,9 @@ export default function LanguageSelector() {
     // Update the HTML lang attribute
     document.documentElement.lang = language.code;
     
+    // Persist user language preference to backend before navigation
+    void apiSetUserLanguage(language.code);
+    
     // Update URL to new language path
     const currentPath = window.location.pathname;
     const pathSegments = currentPath.split('/').filter(segment => segment !== '');
@@ -58,12 +62,14 @@ export default function LanguageSelector() {
     }
     
     const newPath = '/' + pathSegments.join('/');
-    window.location.href = newPath;
     
-    // Dispatch custom event for other components to listen to
+    // Dispatch custom event for other components to listen to (before navigation)
     window.dispatchEvent(new CustomEvent('languageChanged', { 
       detail: { language: language.code } 
     }));
+    
+    // Navigate after dispatching the event
+    window.location.href = newPath;
   };
 
   return (

@@ -150,3 +150,23 @@ export const apiRevokeSyncCode = async (): Promise<apiResponse> => {
 }
 
 // Phone verification is determined by reloading user data and checking phoneVerified.
+
+export const apiSetUserLanguage = async (language: string): Promise<apiResponse> => {
+    const response = await fetch(`${API_URL}/user/language`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ language: language })
+    });
+    if (response.status === 200) {
+        return {
+            data: await response.json(),
+            status: "OK"
+        }
+    }
+    else {
+        return {
+            message: response.statusText,
+            status: "ERROR"
+        }
+    }
+}
