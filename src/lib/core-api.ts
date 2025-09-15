@@ -5,6 +5,8 @@ export type userData = {
     userID: string
     userData: {
         userName?: string
+        phoneNumber?: string
+        phoneVerified?: boolean
     }
 }
 
@@ -87,3 +89,64 @@ export const apiSetUserName = async (userName: string): Promise<apiResponse> => 
         }
     }
 }
+
+
+export const apiSetPhoneNumber = async (phoneNumber: string): Promise<apiResponse> => {
+    const response = await fetch(`${API_URL}/user/phone`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ phoneNumber: phoneNumber })
+    });
+    if (response.status === 200) {
+        return {
+            data: await response.json(),
+            status: "OK"
+        }
+    }
+    else {
+        return {
+            message: response.statusText,
+            status: "ERROR"
+        }
+    }
+}
+
+export const apiCreateSyncCode = async (): Promise<apiResponse> => {
+    const response = await fetch(`${API_URL}/user/syncCode/generate`, {
+        method: "POST",
+        credentials: "include"
+    });
+    if (response.status === 200) {
+        return {
+            data: await response.json(),
+            status: "OK"
+        }
+    }
+    else {
+        return {
+            message: response.statusText,
+            status: "ERROR"
+        }
+    }
+}
+
+export const apiRevokeSyncCode = async (): Promise<apiResponse> => {
+    const response = await fetch(`${API_URL}/user/syncCode/revoke`, {
+        method: "POST",
+        credentials: "include"
+    });
+    if (response.status === 200) {
+        return {
+            data: await response.json(),
+            status: "OK"
+        }
+    }
+    else {
+        return {
+            message: response.statusText,
+            status: "ERROR"
+        }
+    }
+}
+
+// Phone verification is determined by reloading user data and checking phoneVerified.

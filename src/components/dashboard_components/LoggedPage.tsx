@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { userData } from "@/lib/core-api";
 import { Button } from "@/components/ui/button";
 import SetUserName from "./SetUserName";
+import PhoneSetupAndVerify from "./PhoneSetupAndVerify";
 
 interface LoggedPageProps {
     logoutText: string;
@@ -22,6 +23,8 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
         }
     }, []);
 
+    const handleRefresh = () => onUserNameSet();
+
     return (
         <div className="relative min-h-screen">
             {/* Logout button in bottom right corner */}
@@ -41,13 +44,18 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                 {!user.userData?.userName ? (
                     <SetUserName onUserNameSet={onUserNameSet} translations={translations} />
                 ) : (
-                    <div className="mt-8 p-4 border rounded-lg max-w-md w-full">
-                        <h2 className="text-xl font-semibold mb-4">{translations.userInfo.title}</h2>
-                        <div className="space-y-2">
-                            <p><strong>{translations.userInfo.userId}:</strong> {user.userID}</p>
-                            <p><strong>{translations.userInfo.name}:</strong> {user.userData.userName}</p>
-                            <p><strong>{translations.userInfo.userData}:</strong> {JSON.stringify(user.userData, null, 2)}</p>
-                        </div>
+                    <div className="mt-8 p-4 border rounded-lg max-w-md w-full space-y-4">
+                        <PhoneSetupAndVerify user={user} translations={translations} onRefresh={handleRefresh} />
+                        {user.userData?.phoneVerified && (
+                            <>
+                                <h2 className="text-xl font-semibold mb-2">{translations.userInfo.title}</h2>
+                                <div className="space-y-2">
+                                    <p><strong>{translations.userInfo.userId}:</strong> {user.userID}</p>
+                                    <p><strong>{translations.userInfo.name}:</strong> {user.userData.userName}</p>
+                                    <p><strong>{translations.userInfo.userData}:</strong> {JSON.stringify(user.userData, null, 2)}</p>
+                                </div>
+                            </>
+                        )}
                     </div>
                 )}
             </div>
