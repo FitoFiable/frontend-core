@@ -198,7 +198,7 @@ export default function PhoneSetupAndVerify({ user, translations, onRefresh }: P
                             <div className="flex gap-2">
                                 <Button asChild>
                                     <a
-                                        href={`https://wa.me/573108108201?text=${encodeURIComponent(`Hi Fito, this is my sync code: ${currentSyncCode}`)}`}
+                                        href={`https://wa.me/573108108201?text=${encodeURIComponent((translations.phone?.whatsappMessageTemplate || 'Hi Fito, this is my sync code: {code}').replace('{code}', currentSyncCode))}`}
                                         target="_blank"
                                         rel="noreferrer"
                                     >

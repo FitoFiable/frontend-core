@@ -30,7 +30,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
             {/* Logout button in bottom right corner */}
             <div className="absolute bottom-4 right-4">
                 <Button
-                    className="w-24"
+                    className="w-35"
                     asChild
                 >
                     <a href={`/logout?redirect_to=${currentPath}&lang=${language}`}>
@@ -48,6 +48,13 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                         <PhoneSetupAndVerify user={user} translations={translations} onRefresh={handleRefresh} />
                         {user.userData?.phoneVerified && (
                             <>
+                                <div className="w-full flex justify-center mb-4">
+                                    <img
+                                        src="/fitofiable/fito-research.webp"
+                                        alt="Fito researching"
+                                        className="w-40 h-auto"
+                                    />
+                                </div>
                                 <h2 className="text-xl font-semibold mb-2">{translations.userInfo.title}</h2>
                                 <div className="space-y-2">
                                     <p><strong>{translations.userInfo.userId}:</strong> {user.userID}</p>
