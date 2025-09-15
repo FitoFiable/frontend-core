@@ -1,7 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { Button } from '@/components/ui/button';
-import LoginLogout from '@/components/general/LoginLogout';
+import Dashboard from '@/components/general/Dashboard';
 
 // Import all language translations
 import { homePage as enHomePage } from '@/i18n/en/homePage';
@@ -47,15 +46,5 @@ const translations = getTranslations(lang || 'en');
 ---
 
 <Layout>
-	<div class="grid place-items-center h-screen content-center">
-		<img 
-			src="/fitofiable/fito.webp" 
-			alt="Fitofiable Logo" 
-			class="w-40 h-40 object-cover"
-			width="160"
-			height="160"
-			style="aspect-ratio: 1/1;"
-		>
-		<LoginLogout client:load loginText={translations.loginText} logoutText={translations.logoutText} />
-	</div>
+	<Dashboard client:load loginText={translations.loginText} logoutText={translations.logoutText} translations={translations} />
 </Layout>

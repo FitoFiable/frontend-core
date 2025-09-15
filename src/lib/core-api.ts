@@ -3,6 +3,9 @@ import { API_URL } from "astro:env/client";
 
 export type userData = {
     userID: string
+    userData: {
+        userName?: string
+    }
 }
 
 type successResponse = {
@@ -41,7 +44,7 @@ export const apiHealthCheck = async (): Promise<apiResponse> => {
 }
 
 export const apiGetUser = async (): Promise<apiResponse> => {
-    const response = await fetch(`${API_URL}/protected/user`, {
+    const response = await fetch(`${API_URL}/user`, {
         method: "GET",
         credentials: "include"
     });
@@ -55,6 +58,26 @@ export const apiGetUser = async (): Promise<apiResponse> => {
     else if (response.status === 401) {
         return {
             status: "UNAUTHENTICATED"
+        }
+    }
+    else {
+        return {
+            message: response.statusText,
+            status: "ERROR"
+        }
+    }
+}
+
+export const apiSetUserName = async (userName: string): Promise<apiResponse> => {
+    const response = await fetch(`${API_URL}/user/name`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ name: userName })
+    });
+    if (response.status === 200) {
+        return {
+            data: await response.json(),
+            status: "OK"
         }
     }
     else {

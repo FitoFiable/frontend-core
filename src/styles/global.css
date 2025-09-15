@@ -167,33 +167,33 @@
 
 .dark {
   --background: oklch(0.145 0 0);              /* dark base */
-  --foreground: oklch(0.985 0 0);              /* white text */
+  --foreground: oklch(0.95 0.02 85);           /* warm off-white for main text */
 
   --card: oklch(0.20 0 0);                     /* dark card */
-  --card-foreground: oklch(0.96 0 0);
+  --card-foreground: oklch(0.97 0.025 83);     /* slightly brighter for card text */
 
   --popover: oklch(0.20 0 0);
-  --popover-foreground: oklch(0.96 0 0);
+  --popover-foreground: oklch(0.96 0.02 85);   /* standard warm off-white for popovers */
 
   /* Primary = mint green */
   --primary: oklch(0.72 0.14 164.14);          /* mint but darker */
-  --primary-foreground: oklch(0.985 0 0);      /* white text on mint */
+  --primary-foreground: oklch(0.98 0.03 82);   /* brightest warm white for primary actions */
 
   /* Secondary neutrals */
   --secondary: oklch(0.26 0 0);                /* dark gray */
-  --secondary-foreground: oklch(0.92 0 0);     /* light text */
+  --secondary-foreground: oklch(0.94 0.015 87); /* slightly muted warm white for secondary */
 
   /* Muted */
   --muted: oklch(0.26 0 0);
-  --muted-foreground: oklch(0.65 0 0);
+  --muted-foreground: oklch(0.92 0.01 88);     /* more muted warm white for less emphasis */
 
   /* Accent (brighter mint) */
   --accent: oklch(0.78 0.16 164);              /* vibrant mint accent */
-  --accent-foreground: oklch(0.985 0 0);
+  --accent-foreground: oklch(0.97 0.025 83);   /* bright warm white for accent text */
 
   /* Destructive (red for alerts) */
   --destructive: oklch(0.58 0.25 27);          /* red/orange */
-  --destructive-foreground: oklch(0.985 0 0);
+  --destructive-foreground: oklch(0.98 0.03 82); /* brightest warm white for alerts */
 
   /* Borders / Inputs */
   --border: oklch(0.35 0 0);
@@ -209,11 +209,11 @@
 
   /* Sidebar */
   --sidebar: oklch(0.20 0 0);                  /* dark bg */
-  --sidebar-foreground: oklch(0.96 0 0);
+  --sidebar-foreground: oklch(0.93 0.015 86);  /* slightly dimmed warm white for sidebar */
   --sidebar-primary: oklch(0.72 0.14 164.14);  /* mint */
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary-foreground: oklch(0.96 0.02 85); /* standard warm white */
   --sidebar-accent: oklch(0.78 0.16 164);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-accent-foreground: oklch(0.95 0.02 85); /* standard warm white */
   --sidebar-border: oklch(0.35 0 0);
   --sidebar-ring: oklch(0.78 0.16 164);
 }
