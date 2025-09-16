@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import type { userData } from '@/lib/core-api';
-import { apiGetUser } from '@/lib/core-api';
+import type { userData, userEvent } from '@/lib/core-api';
+import { apiGetUser, apiGetEvents } from '@/lib/core-api';
 import { ArrowLeft, Clock, Mail, Phone, User, CreditCard, AlertCircle, CheckCircle, Info } from 'lucide-react';
 
 interface EventHistoryPageProps {
@@ -22,6 +22,8 @@ interface HistoryEvent {
 export default function EventHistoryPage({ homePageTranslations, eventHistoryPageTranslations }: EventHistoryPageProps) {
   const [user, setUser] = useState<userData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState<userEvent[]>([])
+  const [nextCursor, setNextCursor] = useState<number | null>(null)
 
   const fetchUserData = async () => {
     const userResponse = await apiGetUser();
@@ -39,89 +41,16 @@ export default function EventHistoryPage({ homePageTranslations, eventHistoryPag
     return 'en';
   };
 
-  // Dummy history events
-  const historyEvents: HistoryEvent[] = [
-    {
-      id: '1',
-      type: 'email',
-      title: 'Email Synchronized',
-      description: 'Successfully synchronized with notifications@bancolombia.com.co',
-      timestamp: '2024-01-15 14:30:25',
-      status: 'success'
-    },
-    {
-      id: '2',
-      type: 'phone',
-      title: 'Phone Verification',
-      description: 'Phone number +57 310 123 4567 verified successfully',
-      timestamp: '2024-01-15 14:25:10',
-      status: 'success'
-    },
-    {
-      id: '3',
-      type: 'payment',
-      title: 'Transaction Detected',
-      description: 'Payment of $150,000 COP to Supermercado ABC',
-      timestamp: '2024-01-15 12:45:33',
-      status: 'info'
-    },
-    {
-      id: '4',
-      type: 'email',
-      title: 'Email Added',
-      description: 'Added alertas@davivienda.com to allowed emails',
-      timestamp: '2024-01-15 10:20:15',
-      status: 'info'
-    },
-    {
-      id: '5',
-      type: 'system',
-      title: 'System Update',
-      description: 'Dashboard updated to version 2.1.0',
-      timestamp: '2024-01-14 16:00:00',
-      status: 'info'
-    },
-    {
-      id: '6',
-      type: 'notification',
-      title: 'Weekly Report',
-      description: 'Your weekly financial summary is ready',
-      timestamp: '2024-01-14 09:00:00',
-      status: 'info'
-    },
-    {
-      id: '7',
-      type: 'payment',
-      title: 'Transaction Detected',
-      description: 'Withdrawal of $50,000 COP from ATM',
-      timestamp: '2024-01-13 18:30:45',
-      status: 'info'
-    },
-    {
-      id: '8',
-      type: 'email',
-      title: 'Email Synchronization Failed',
-      description: 'Failed to sync with transacciones@bbva.com.co - retrying...',
-      timestamp: '2024-01-13 15:15:20',
-      status: 'warning'
-    },
-    {
-      id: '9',
-      type: 'user',
-      title: 'Profile Updated',
-      description: 'Username changed to "Juan Pérez"',
-      timestamp: '2024-01-13 11:30:00',
-      status: 'success'
-    },
-    {
-      id: '10',
-      type: 'payment',
-      title: 'Transaction Detected',
-      description: 'Transfer of $200,000 COP to María García',
-      timestamp: '2024-01-12 14:20:10',
-      status: 'info'
-    }
-  ];
+  const mapCategoryToType = (category: userEvent['category']): HistoryEvent['type'] => {
+    if (category === 'email' || category === 'phone' || category === 'user' || category === 'payment' || category === 'system' || category === 'notification') return category
+    return 'system'
+  }
+
+  const mapCategoryToStatus = (category: userEvent['category']): HistoryEvent['status'] => {
+    if (category === 'success' || category === 'warning' || category === 'error' || category === 'info') return category
+    // default neutral
+    return 'info'
+  }
 
   const getEventIcon = (type: string) => {
     switch (type) {
@@ -176,6 +105,11 @@ export default function EventHistoryPage({ homePageTranslations, eventHistoryPag
     const initializePage = async () => {
       setLoading(true);
       await fetchUserData();
+      const eventsResp = await apiGetEvents({ limit: 20 });
+      if (eventsResp.status === 'OK') {
+        setEvents(eventsResp.data.events)
+        setNextCursor(eventsResp.data.nextCursor)
+      }
       setLoading(false);
     };
 
@@ -230,15 +164,15 @@ export default function EventHistoryPage({ homePageTranslations, eventHistoryPag
 
         {/* Event History List */}
         <div className="space-y-4">
-          {historyEvents.map((event) => (
+          {events.map((event, idx) => (
             <Card
-              key={event.id}
-              className={`border-l-4 ${getStatusColor(event.status)} transition-all hover:shadow-md`}
+              key={`${event.date}-${idx}`}
+              className={`border-l-4 ${getStatusColor(mapCategoryToStatus(event.category))} transition-all hover:shadow-md`}
             >
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 mt-1">
-                    {getEventIcon(event.type)}
+                    {getEventIcon(mapCategoryToType(event.category))}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
@@ -246,9 +180,9 @@ export default function EventHistoryPage({ homePageTranslations, eventHistoryPag
                         {event.title}
                       </h3>
                       <div className="flex items-center gap-2">
-                        {getStatusIcon(event.status)}
+                        {getStatusIcon(mapCategoryToStatus(event.category))}
                         <span className="text-sm text-gray-500 dark:text-gray-400">
-                          {event.timestamp}
+                          {new Date(event.date).toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -264,9 +198,21 @@ export default function EventHistoryPage({ homePageTranslations, eventHistoryPag
 
         {/* Load More Button */}
         <div className="mt-8 text-center">
-          <Button variant="outline" className="px-8">
-            {eventHistoryPageTranslations?.loadMore || 'Load More Events'}
-          </Button>
+          {nextCursor !== null && (
+            <Button
+              variant="outline"
+              className="px-8"
+              onClick={async () => {
+                const resp = await apiGetEvents({ limit: 20, cursor: nextCursor })
+                if (resp.status === 'OK') {
+                  setEvents(prev => [...prev, ...resp.data.events])
+                  setNextCursor(resp.data.nextCursor)
+                }
+              }}
+            >
+              {eventHistoryPageTranslations?.loadMore || 'Load More Events'}
+            </Button>
+          )}
         </div>
       </div>
     </div>

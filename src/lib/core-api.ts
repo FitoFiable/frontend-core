@@ -12,6 +12,13 @@ export type userData = {
     }
 }
 
+export type userEvent = {
+    title: string
+    description: string
+    category: 'email' | 'phone' | 'user' | 'payment' | 'system' | 'notification' | 'info' | 'warning' | 'success' | 'error'
+    date: string
+}
+
 type successResponse = {
     data: any
     status: "OK"
@@ -56,6 +63,35 @@ export const apiGetUser = async (): Promise<apiResponse> => {
     if (response.status === 200) {
         return {
             data: await response.json() as userData,
+            status: "OK"
+        }
+    }
+    else if (response.status === 401) {
+        return {
+            status: "UNAUTHENTICATED"
+        }
+    }
+    else {
+        return {
+            message: response.statusText,
+            status: "ERROR"
+        }
+    }
+}
+
+export const apiGetEvents = async (opts?: { limit?: number, cursor?: number|null }): Promise<apiResponse> => {
+    const params = new URLSearchParams()
+    if (opts?.limit) params.set('limit', String(opts.limit))
+    if (opts?.cursor != null) params.set('cursor', String(opts.cursor))
+    const query = params.toString()
+    const response = await fetch(`${API_URL}/user/events${query ? `?${query}` : ''}`, {
+        method: "GET",
+        credentials: "include"
+    });
+
+    if (response.status === 200) {
+        return {
+            data: await response.json() as { events: userEvent[], nextCursor: number | null, total: number },
             status: "OK"
         }
     }
