@@ -59,73 +59,80 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                 ) : (
                     <div className="container mx-auto px-4 py-8">
                         {/* Header Section */}
+
                         <div className="mb-8">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-4">
-                                    <img
-                                        src="/fitofiable/fito-research.webp"
-                                        alt="Fito researching"
-                                        className="w-16 h-16 rounded-full"
-                                    />
-                                    <div>
-                                        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                                            {loggedDashboardTranslations?.welcome?.replace('{userName}', user.userData.userName) || `Welcome back, ${user.userData.userName}!`}
-                                        </h1>
-                                        <p className="text-gray-600 dark:text-gray-300">{loggedDashboardTranslations?.dashboardOverview || "Here's your dashboard overview"}</p>
+                            {user.userData?.phoneVerified && (
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-4">
+                                        <img
+                                            src="/fitofiable/fito-research.webp"
+                                            alt="Fito researching"
+                                            className="w-16 h-16 rounded-full"
+                                        />
+                                        <div>
+                                            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                                                {loggedDashboardTranslations?.welcome?.replace('{userName}', user.userData.userName) || `Welcome back, ${user.userData.userName}!`}
+                                            </h1>
+                                            <p className="text-gray-600 dark:text-gray-300">{loggedDashboardTranslations?.dashboardOverview || "Here's your dashboard overview"}</p>
+                                        </div>
                                     </div>
                                 </div>
+                            )}
+                            <div className="max-w-lg mx-auto">
                                 <PhoneSetupAndVerify user={user} translations={translations} onRefresh={handleRefresh} />
                             </div>
 
                             {/* Navigation Buttons */}
-                            <div className="mt-6 flex flex-wrap gap-4">
-                                <Button
-                                    asChild
-                                    variant="outline"
-                                    className="flex items-center gap-2"
-                                >
-                                    <a href={`/${language}/user-info`}>
-                                        <User className="h-4 w-4" />
-                                        {loggedDashboardTranslations?.userInformation || 'User Information'}
-                                    </a>
-                                </Button>
-                                <Button
-                                    asChild
-                                    variant="outline"
-                                    className="flex items-center gap-2"
-                                >
-                                    <a href={`/${language}/email-management`}>
-                                        <Mail className="h-4 w-4" />
-                                        {loggedDashboardTranslations?.emailManagement || 'Email Management'}
-                                    </a>
-                                </Button>
-                                <Button
-                                    asChild
-                                    variant="outline"
-                                    className="flex items-center gap-2"
-                                >
-                                    <a href={`/${language}/transactions`}>
-                                        <CreditCard className="h-4 w-4" />
-                                        {loggedDashboardTranslations?.yourTransactions || 'Your Transactions'}
-                                    </a>
-                                </Button>
-                                <Button
-                                    asChild
-                                    variant="outline"
-                                    className="flex items-center gap-2"
-                                >
-                                    <a href={`/${language}/event-history`}>
-                                        <History className="h-4 w-4" />
-                                        {loggedDashboardTranslations?.eventHistory || 'Event History'}
-                                    </a>
-                                </Button>
-                            </div>
+                            {user.userData?.phoneVerified && (
+                                <div className="mt-6 flex flex-wrap gap-4">
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        className="flex items-center gap-2"
+                                    >
+                                        <a href={`/${language}/user-info`}>
+                                            <User className="h-4 w-4" />
+                                            {loggedDashboardTranslations?.userInformation || 'User Information'}
+                                        </a>
+                                    </Button>
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        className="flex items-center gap-2"
+                                    >
+                                        <a href={`/${language}/email-management`}>
+                                            <Mail className="h-4 w-4" />
+                                            {loggedDashboardTranslations?.emailManagement || 'Email Management'}
+                                        </a>
+                                    </Button>
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        className="flex items-center gap-2"
+                                    >
+                                        <a href={`/${language}/transactions`}>
+                                            <CreditCard className="h-4 w-4" />
+                                            {loggedDashboardTranslations?.yourTransactions || 'Your Transactions'}
+                                        </a>
+                                    </Button>
+                                    <Button
+                                        asChild
+                                        variant="outline"
+                                        className="flex items-center gap-2"
+                                    >
+                                        <a href={`/${language}/event-history`}>
+                                            <History className="h-4 w-4" />
+                                            {loggedDashboardTranslations?.eventHistory || 'Event History'}
+                                        </a>
+                                    </Button>
+                                </div>
+                            )}
                         </div>
 
                         {/* Fito Bot Introduction & Transaction Methods */}
-                        {showFitoIntro && (
+                        {showFitoIntro && user.userData?.phoneVerified && (
                             <div className="mb-8">
-                                <FitoIntroduction 
+                                <FitoIntroduction
                                     language={language}
                                     showCloseButton={true}
                                     onClose={() => setShowFitoIntro(false)}
@@ -133,154 +140,156 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                             </div>
                         )}
 
-                                {/* Dummy Data Disclaimer */}
-                                {showDummyDataAlert && (
-                                    <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-lg p-4 mb-6 relative">
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => setShowDummyDataAlert(false)}
-                                            className="absolute top-2 right-2 h-6 w-6 p-0 rounded-full hover:bg-amber-100 dark:hover:bg-amber-800/30"
-                                        >
-                                            <X className="h-3 w-3 text-amber-600 dark:text-amber-400" />
-                                        </Button>
-                                        <div className="flex items-start gap-3">
-                                            <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                        {/* Dummy Data Disclaimer */}
+                        {showFitoIntro && user.userData?.phoneVerified && showDummyDataAlert && (
+                            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-lg p-4 mb-6 relative">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setShowDummyDataAlert(false)}
+                                    className="absolute top-2 right-2 h-6 w-6 p-0 rounded-full hover:bg-amber-100 dark:hover:bg-amber-800/30"
+                                >
+                                    <X className="h-3 w-3 text-amber-600 dark:text-amber-400" />
+                                </Button>
+                                <div className="flex items-start gap-3">
+                                    <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                                    <div>
+                                        <h3 className="text-sm font-semibold text-amber-800 dark:text-amber-200 mb-1">
+                                            {loggedDashboardTranslations?.developmentInProgress?.title || 'Development in Progress'}
+                                        </h3>
+                                        <p className="text-sm text-amber-700 dark:text-amber-300">
+                                            {loggedDashboardTranslations?.developmentInProgress?.description || 'The data below is dummy data showing what you\'ll have in the future. We\'re still building the core features!'} <strong>{loggedDashboardTranslations?.developmentInProgress?.transactionManagement || 'Transaction Management'}</strong> and <strong>{loggedDashboardTranslations?.developmentInProgress?.eventHistory || 'Event History'}</strong>. More financial tools coming soon!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Financial Overview Cards */}
+                        {user.userData?.phoneVerified && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                                <Card>
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
                                             <div>
-                                                <h3 className="text-sm font-semibold text-amber-800 dark:text-amber-200 mb-1">
-                                                    {loggedDashboardTranslations?.developmentInProgress?.title || 'Development in Progress'}
-                                                </h3>
-                                                <p className="text-sm text-amber-700 dark:text-amber-300">
-                                                    {loggedDashboardTranslations?.developmentInProgress?.description || 'The data below is dummy data showing what you\'ll have in the future. We\'re still building the core features!'} <strong>{loggedDashboardTranslations?.developmentInProgress?.transactionManagement || 'Transaction Management'}</strong> and <strong>{loggedDashboardTranslations?.developmentInProgress?.eventHistory || 'Event History'}</strong>. More financial tools coming soon!
-                                                </p>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.monthlyExpenses || 'Monthly Expenses'}</p>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">$2,450</p>
+                                                <p className="text-xs text-red-600 dark:text-red-400">+12% {loggedDashboardTranslations?.financialOverview?.fromLastMonth || 'from last month'}</p>
+                                            </div>
+                                            <div className="h-8 w-8 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                                                <TrendingUp className="h-4 w-4 text-red-600 dark:text-red-400" />
                                             </div>
                                         </div>
-                                    </div>
-                                )}
+                                    </CardContent>
+                                </Card>
 
-                                {/* Financial Overview Cards */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                                    <Card>
-                                        <CardContent className="p-6">
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.monthlyExpenses || 'Monthly Expenses'}</p>
-                                                    <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">$2,450</p>
-                                                    <p className="text-xs text-red-600 dark:text-red-400">+12% {loggedDashboardTranslations?.financialOverview?.fromLastMonth || 'from last month'}</p>
-                                                </div>
-                                                <div className="h-8 w-8 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
-                                                    <TrendingUp className="h-4 w-4 text-red-600 dark:text-red-400" />
-                                                </div>
+                                <Card>
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.transactionsTracked || 'Transactions Tracked'}</p>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">47</p>
+                                                <p className="text-xs text-blue-600 dark:text-blue-400">{loggedDashboardTranslations?.financialOverview?.thisMonthViaFito || 'This month via Fito'}</p>
                                             </div>
-                                        </CardContent>
-                                    </Card>
-
-                                    <Card>
-                                        <CardContent className="p-6">
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.transactionsTracked || 'Transactions Tracked'}</p>
-                                                    <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">47</p>
-                                                    <p className="text-xs text-blue-600 dark:text-blue-400">{loggedDashboardTranslations?.financialOverview?.thisMonthViaFito || 'This month via Fito'}</p>
-                                                </div>
-                                                <div className="h-8 w-8 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
-                                                    <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                                                </div>
+                                            <div className="h-8 w-8 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
+                                                <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                                             </div>
-                                        </CardContent>
-                                    </Card>
+                                        </div>
+                                    </CardContent>
+                                </Card>
 
-                                    <Card>
-                                        <CardContent className="p-6">
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.spendingCategories || 'Spending Categories'}</p>
-                                                    <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">8</p>
-                                                    <p className="text-xs text-purple-600 dark:text-purple-400">{loggedDashboardTranslations?.financialOverview?.autoCategorized || 'Auto-categorized'}</p>
-                                                </div>
-                                                <div className="h-8 w-8 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
-                                                    <Shield className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                                                </div>
+                                <Card>
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.spendingCategories || 'Spending Categories'}</p>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">8</p>
+                                                <p className="text-xs text-purple-600 dark:text-purple-400">{loggedDashboardTranslations?.financialOverview?.autoCategorized || 'Auto-categorized'}</p>
                                             </div>
-                                        </CardContent>
-                                    </Card>
-
-                                    <Card>
-                                        <CardContent className="p-6">
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.savingsRate || 'Savings Rate'}</p>
-                                                    <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">23%</p>
-                                                    <p className="text-xs text-green-600 dark:text-green-400">+5% {loggedDashboardTranslations?.financialOverview?.thisMonth || 'this month'}</p>
-                                                </div>
-                                                <div className="h-8 w-8 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
-                                                    <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
-                                                </div>
+                                            <div className="h-8 w-8 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
+                                                <Shield className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                                             </div>
-                                        </CardContent>
-                                    </Card>
-                                </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
 
-                                {/* Financial Analytics Charts */}
-                                {user.userData?.phoneVerified && (
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                                        {/* Monthly Expenses Trend */}
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle className="flex items-center gap-2">
-                                                    <TrendingUp className="h-5 w-5 text-blue-600" />
-                                                    {loggedDashboardTranslations?.charts?.monthlyExpensesTrend || 'Monthly Expenses Trend'}
-                                                </CardTitle>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <DummyBarChart />
-                                            </CardContent>
-                                        </Card>
+                                <Card>
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.savingsRate || 'Savings Rate'}</p>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">23%</p>
+                                                <p className="text-xs text-green-600 dark:text-green-400">+5% {loggedDashboardTranslations?.financialOverview?.thisMonth || 'this month'}</p>
+                                            </div>
+                                            <div className="h-8 w-8 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
+                                                <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
 
-                                        {/* Spending by Category */}
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle className="flex items-center gap-2">
-                                                    <Shield className="h-5 w-5 text-purple-600" />
-                                                    {loggedDashboardTranslations?.charts?.spendingByCategory || 'Spending by Category'}
-                                                </CardTitle>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <PieChart />
-                                            </CardContent>
-                                        </Card>
+                        {/* Financial Analytics Charts */}
+                        {user.userData?.phoneVerified && (
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                                {/* Monthly Expenses Trend */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <TrendingUp className="h-5 w-5 text-blue-600" />
+                                            {loggedDashboardTranslations?.charts?.monthlyExpensesTrend || 'Monthly Expenses Trend'}
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <DummyBarChart />
+                                    </CardContent>
+                                </Card>
 
-                                        {/* Weekly Spending Pattern */}
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle className="flex items-center gap-2">
-                                                    <Clock className="h-5 w-5 text-green-600" />
-                                                    {loggedDashboardTranslations?.charts?.weeklySpendingPattern || 'Weekly Spending Pattern'}
-                                                </CardTitle>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <LineChart />
-                                            </CardContent>
-                                        </Card>
+                                {/* Spending by Category */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Shield className="h-5 w-5 text-purple-600" />
+                                            {loggedDashboardTranslations?.charts?.spendingByCategory || 'Spending by Category'}
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <PieChart />
+                                    </CardContent>
+                                </Card>
 
-                                        {/* Income vs Expenses */}
-                                        <Card>
-                                            <CardHeader>
-                                                <CardTitle className="flex items-center gap-2">
-                                                    <FileText className="h-5 w-5 text-orange-600" />
-                                                    {loggedDashboardTranslations?.charts?.incomeVsExpenses || 'Income vs Expenses'}
-                                                </CardTitle>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <AreaChart />
-                                            </CardContent>
-                                        </Card>
-                                    </div>
-                                )}
+                                {/* Weekly Spending Pattern */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Clock className="h-5 w-5 text-green-600" />
+                                            {loggedDashboardTranslations?.charts?.weeklySpendingPattern || 'Weekly Spending Pattern'}
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <LineChart />
+                                    </CardContent>
+                                </Card>
+
+                                {/* Income vs Expenses */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <FileText className="h-5 w-5 text-orange-600" />
+                                            {loggedDashboardTranslations?.charts?.incomeVsExpenses || 'Income vs Expenses'}
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <AreaChart />
+                                    </CardContent>
+                                </Card>
                             </div>
                         )}
                     </div>
-                </div>
+                )}
+            </div>
+        </div>
 
     );
 }
