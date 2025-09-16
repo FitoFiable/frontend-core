@@ -1,17 +1,9 @@
 import React from 'react';
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const data = [
-  { day: 'Mon', spending: 45000 },
-  { day: 'Tue', spending: 62000 },
-  { day: 'Wed', spending: 38000 },
-  { day: 'Thu', spending: 75000 },
-  { day: 'Fri', spending: 95000 },
-  { day: 'Sat', spending: 120000 },
-  { day: 'Sun', spending: 85000 },
-];
+type Props = { data: { day: string, spending: number }[] }
 
-export default function LineChart() {
+export default function LineChart({ data }: Props) {
   return (
     <div className="w-full h-64">
       <ResponsiveContainer width="100%" height="100%">

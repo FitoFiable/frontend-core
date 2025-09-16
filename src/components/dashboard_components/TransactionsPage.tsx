@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { userData, userTransaction } from '@/lib/core-api';
-import { apiGetUser, apiGetTransactions } from '@/lib/core-api';
+import { apiGetUser, apiGetTransactions, apiUpdateTransaction, apiGetTransactionsConfig } from '@/lib/core-api';
 import { ArrowLeft, CreditCard, TrendingUp, TrendingDown, Calendar, MapPin, Tag, Edit, X, Eye, ChevronRight } from 'lucide-react';
 
 interface TransactionsPageProps {
@@ -18,6 +18,7 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [categories, setCategories] = useState<string[]>([])
 
   const fetchUserData = async () => {
     const userResponse = await apiGetUser();
@@ -49,6 +50,11 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
     }
   }
 
+  const fetchCategories = async () => {
+    const res = await apiGetTransactionsConfig()
+    if (res.status === 'OK') setCategories((res.data as any).categories || ['Food','Leisure','Education','Other','Emergence'])
+  }
+
   const handleEditTransaction = (transaction: Transaction) => {
     setEditingTransaction(transaction);
     setIsEditModalOpen(true);
@@ -59,11 +65,15 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
     setEditingTransaction(null);
   };
 
-  const handleSaveTransaction = (updatedTransaction: Transaction) => {
-    setTransactions(prev => 
-      prev.map(t => t.id === updatedTransaction.id ? updatedTransaction : t)
-    );
-    handleCloseModal();
+  const handleSaveTransaction = async (updatedTransaction: Transaction) => {
+    setTransactions(prev => prev.map(t => t.id === updatedTransaction.id ? updatedTransaction : t))
+    handleCloseModal()
+    if (updatedTransaction.id) {
+      const { id, ...rest } = updatedTransaction as any
+      try { await apiUpdateTransaction(id, rest) } catch {}
+      // Re-sync to ensure server-side normalization (e.g., category mapping)
+      await fetchTransactions()
+    }
   };
 
   const getTransactionIcon = (type: string) => {
@@ -121,11 +131,17 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
     window.open(url, '_blank')
   }
 
+  const isImageUrl = (url?: string) => {
+    if (!url) return false
+    return /(\.png|\.jpg|\.jpeg|\.webp|\.gif)(\?.*)?$/i.test(url)
+  }
+
   useEffect(() => {
     const initializePage = async () => {
       setLoading(true);
       await fetchUserData();
       await fetchTransactions();
+      await fetchCategories();
       setLoading(false);
     };
 
@@ -293,14 +309,24 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
                       )}
                     </div>
                     {transaction.mediaUrl && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => { e.stopPropagation(); openReceipt(transaction.mediaUrl) }}
-                        className="h-8 px-3 text-xs bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 text-green-700 dark:text-green-400"
-                      >
-                        {transactionsPageTranslations?.transaction?.seeReceipt || 'See receipt'}
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        {isImageUrl(transaction.mediaUrl) && (
+                          <img
+                            src={transaction.mediaUrl}
+                            alt="receipt preview"
+                            className="h-8 w-8 rounded object-cover border border-gray-200 dark:border-gray-700"
+                            onClick={(e) => { e.stopPropagation(); openReceipt(transaction.mediaUrl) }}
+                          />
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => { e.stopPropagation(); openReceipt(transaction.mediaUrl) }}
+                          className="h-8 px-3 text-xs bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 text-green-700 dark:text-green-400"
+                        >
+                          {transactionsPageTranslations?.transaction?.seeReceipt || 'See receipt'}
+                        </Button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -345,14 +371,24 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
                               </div>
                             )}
                             {transaction.mediaUrl && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={(e) => { e.stopPropagation(); openReceipt(transaction.mediaUrl) }}
-                                className="h-7 px-3 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 text-green-700 dark:text-green-400"
-                              >
-                                {transactionsPageTranslations?.transaction?.seeReceipt || 'See receipt'}
-                              </Button>
+                              <div className="flex items-center gap-2">
+                                {isImageUrl(transaction.mediaUrl) && (
+                                  <img
+                                    src={transaction.mediaUrl}
+                                    alt="receipt preview"
+                                    className="h-9 w-9 rounded object-cover border border-gray-200 dark:border-gray-700"
+                                    onClick={(e) => { e.stopPropagation(); openReceipt(transaction.mediaUrl) }}
+                                  />
+                                )}
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={(e) => { e.stopPropagation(); openReceipt(transaction.mediaUrl) }}
+                                  className="h-7 px-3 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 text-green-700 dark:text-green-400"
+                                >
+                                  {transactionsPageTranslations?.transaction?.seeReceipt || 'See receipt'}
+                                </Button>
+                              </div>
                             )}
                             <span className={`font-medium px-2 py-1 rounded-full text-xs ${getStatusColor(transaction.status)} bg-opacity-10`}>
                               {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
@@ -395,6 +431,7 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
           onSave={handleSaveTransaction}
           onClose={handleCloseModal}
           translations={transactionsPageTranslations}
+          categories={categories}
         />
       )}
     </div>
@@ -407,9 +444,10 @@ interface EditTransactionModalProps {
   onSave: (transaction: Transaction) => void;
   onClose: () => void;
   translations?: any;
+  categories: string[];
 }
 
-function EditTransactionModal({ transaction, onSave, onClose, translations }: EditTransactionModalProps) {
+function EditTransactionModal({ transaction, onSave, onClose, translations, categories }: EditTransactionModalProps) {
   const [formData, setFormData] = useState({
     type: transaction.type,
     amount: Math.abs(transaction.amount),
@@ -421,6 +459,14 @@ function EditTransactionModal({ transaction, onSave, onClose, translations }: Ed
     method: transaction.method,
     status: transaction.status
   });
+
+  // Ensure category always belongs to current categories list
+  useEffect(() => {
+    if (!categories.length) return
+    if (!categories.includes(formData.category)) {
+      setFormData(prev => ({ ...prev, category: categories.includes(transaction.category) ? transaction.category : (categories[0] || 'Other') }))
+    }
+  }, [categories])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -520,14 +566,9 @@ function EditTransactionModal({ transaction, onSave, onClose, translations }: Ed
               onChange={(e) => handleChange('category', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
             >
-              <option value="Food & Dining">{translations?.categories?.foodDining || 'Food & Dining'}</option>
-              <option value="Transportation">{translations?.categories?.transportation || 'Transportation'}</option>
-              <option value="Shopping">{translations?.categories?.shopping || 'Shopping'}</option>
-              <option value="Healthcare">{translations?.categories?.healthcare || 'Healthcare'}</option>
-              <option value="Entertainment">{translations?.categories?.entertainment || 'Entertainment'}</option>
-              <option value="Bills & Utilities">{translations?.categories?.billsUtilities || 'Bills & Utilities'}</option>
-              <option value="Salary">{translations?.categories?.salary || 'Salary'}</option>
-              <option value="Transfer">{translations?.categories?.transfer || 'Transfer'}</option>
+              {categories.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
             </select>
           </div>
 

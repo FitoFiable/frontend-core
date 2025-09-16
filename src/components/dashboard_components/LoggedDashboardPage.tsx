@@ -333,6 +333,47 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                             </div>
                         )}
 
+                        {/* Charts (live) */}
+                        {user.userData?.phoneVerified && (
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>{loggedDashboardTranslations?.charts?.spendingByTopCategories || 'Spending by Top Categories'}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <PieChart data={top3CategoriesData} />
+                                    </CardContent>
+                                </Card>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>{loggedDashboardTranslations?.charts?.monthlyOverview || 'Monthly Overview'}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <AreaChart data={monthlySeries} />
+                                    </CardContent>
+                                </Card>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>{loggedDashboardTranslations?.charts?.weeklySpending || 'Weekly Spending'}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <LineChart data={Array.from((() => {
+                                            const map = new Map<string, number>()
+                                            const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+                                            for (const tr of transactions) {
+                                                if (tr.amount < 0) {
+                                                    const d = new Date(`${tr.date}T${tr.time || '00:00'}:00`)
+                                                    const key = days[d.getDay()]
+                                                    map.set(key, (map.get(key) || 0) + Math.abs(tr.amount))
+                                                }
+                                            }
+                                            return days.map(day => ({ day, spending: map.get(day) || 0 }))
+                                        })())} />
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
+
                         {/* Budgets by Category (live) */}
                         {user.userData?.phoneVerified && (
                             <div className="grid grid-cols-1 gap-6 mb-8">
@@ -403,35 +444,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                             </div>
                         )}
 
-                        {/* Charts (live or dummy fallback) */}
-                        {user.userData?.phoneVerified && (
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>{loggedDashboardTranslations?.charts?.spendingByTopCategories || 'Spending by Top Categories'}</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <PieChart data={top3CategoriesData} />
-                                    </CardContent>
-                                </Card>
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>{loggedDashboardTranslations?.charts?.monthlyOverview || 'Monthly Overview'}</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <AreaChart data={monthlySeries} />
-                                    </CardContent>
-                                </Card>
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>{loggedDashboardTranslations?.charts?.weeklySpending || 'Weekly Spending'}</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <LineChart />
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        )}
+                       
                     </div>
                 )}
             </div>

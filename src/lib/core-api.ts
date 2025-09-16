@@ -185,7 +185,7 @@ export const apiSetTransactionsConfig = async (config: Partial<transactionsConfi
     }
 }
 
-export const apiUpdateTransaction = async (id: string, patch: Partial<userTransaction>): Promise<apiResponse> => {
+export const apiUpdateTransaction = async (id: string, patch: Partial<Omit<userTransaction,'id'>>): Promise<apiResponse> => {
     const response = await fetch(`${API_URL}/user/transactions/${id}`, {
         method: "PATCH",
         credentials: "include",
