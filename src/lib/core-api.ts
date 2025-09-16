@@ -7,6 +7,8 @@ export type userData = {
         userName?: string
         phoneNumber?: string
         phoneVerified?: boolean
+        allowedEmails?: string[]
+        confirmedEmails?: string[]
     }
 }
 
@@ -156,6 +158,26 @@ export const apiSetUserLanguage = async (language: string): Promise<apiResponse>
         method: "POST",
         credentials: "include",
         body: JSON.stringify({ language: language })
+    });
+    if (response.status === 200) {
+        return {
+            data: await response.json(),
+            status: "OK"
+        }
+    }
+    else {
+        return {
+            message: response.statusText,
+            status: "ERROR"
+        }
+    }
+}
+
+export const apiSetAllowedEmails = async (allowedEmails: string[]): Promise<apiResponse> => {
+    const response = await fetch(`${API_URL}/user/allowedEmails`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ allowedEmails: allowedEmails })
     });
     if (response.status === 200) {
         return {

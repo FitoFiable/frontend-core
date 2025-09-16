@@ -9,6 +9,7 @@ import LineChart from "./charts/lineChart";
 import PieChart from "./charts/pieChart";
 import AreaChart from "./charts/areaChart";
 import { MessageStatsCard, UserStatsCard, CallStatsCard, GrowthStatsCard } from "./charts/statsCard";
+import EmailManager from "./EmailManager";
 
 interface LoggedPageProps {
     logoutText: string;
@@ -123,6 +124,18 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                         <AreaChart />
                                     </CardContent>
                                 </Card>
+                            </div>
+                        )}
+
+                        {/* Email Management Section */}
+                        {user.userData?.phoneVerified && (
+                            <div className="mb-8">
+                                <EmailManager 
+                                    initialEmails={user.userData.allowedEmails || []} 
+                                    confirmedEmails={user.userData.confirmedEmails || []}
+                                    translations={translations}
+                                    onRefresh={handleRefresh}
+                                />
                             </div>
                         )}
 
