@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { userData, userTransaction } from '@/lib/core-api';
@@ -39,7 +39,13 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
   const fetchTransactions = async () => {
     const res = await apiGetTransactions({ limit: 50 })
     if (res.status === 'OK') {
-      setTransactions(res.data.transactions)
+      const toComparableTimestamp = (t: Transaction) => {
+        const datePart = t.date || '1970-01-01'
+        const timePart = t.time || '00:00'
+        return new Date(`${datePart}T${timePart}:00`).getTime()
+      }
+      const sorted = [...res.data.transactions].sort((a, b) => toComparableTimestamp(b) - toComparableTimestamp(a))
+      setTransactions(sorted)
     }
   }
 
@@ -110,6 +116,11 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
     return amount < 0 ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400';
   };
 
+  const openReceipt = (url?: string) => {
+    if (!url) return
+    window.open(url, '_blank')
+  }
+
   useEffect(() => {
     const initializePage = async () => {
       setLoading(true);
@@ -120,6 +131,24 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
 
     initializePage();
   }, []);
+
+  const { totalExpensesAbs, totalIncome, netBalanceAbs, netIsNegative } = useMemo(() => {
+    let expenses = 0
+    let income = 0
+    for (const t of transactions) {
+      if (t.amount < 0) expenses += t.amount
+      else income += t.amount
+    }
+    const net = income + expenses // expenses is negative
+    return {
+      totalExpensesAbs: Math.abs(expenses),
+      totalIncome: income,
+      netBalanceAbs: Math.abs(net),
+      netIsNegative: net < 0
+    }
+  }, [transactions])
+
+  const formatCurrency = (value: number) => value.toLocaleString('es-CO')
 
   if (loading) {
     return (
@@ -175,7 +204,7 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">{transactionsPageTranslations?.summary?.totalExpenses || 'Total Expenses'}</p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-red-600 dark:text-red-400 truncate">$1,850,000</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-red-600 dark:text-red-400 truncate">${formatCurrency(totalExpensesAbs)}</p>
                 </div>
                 <TrendingDown className="h-6 w-6 sm:h-8 sm:w-8 text-red-500 flex-shrink-0" />
               </div>
@@ -187,7 +216,7 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">{transactionsPageTranslations?.summary?.totalIncome || 'Total Income'}</p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600 dark:text-green-400 truncate">$2,500,000</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600 dark:text-green-400 truncate">${formatCurrency(totalIncome)}</p>
                 </div>
                 <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 flex-shrink-0" />
               </div>
@@ -199,7 +228,7 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">{transactionsPageTranslations?.summary?.netBalance || 'Net Balance'}</p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600 dark:text-blue-400 truncate">$650,000</p>
+                  <p className={`text-lg sm:text-xl lg:text-2xl font-bold ${netIsNegative ? 'text-red-600 dark:text-red-400' : 'text-blue-600 dark:text-blue-400'} truncate`}>${netIsNegative ? '-' : ''}${formatCurrency(netBalanceAbs)}</p>
                 </div>
                 <CreditCard className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 flex-shrink-0" />
               </div>
@@ -263,18 +292,16 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
                         </div>
                       )}
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEditTransaction(transaction);
-                      }}
-                      className="h-8 px-3 text-xs bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400"
-                    >
-                      <Eye className="h-3 w-3 mr-1" />
-                      {transactionsPageTranslations?.transaction?.details || 'Details'}
-                    </Button>
+                    {transaction.mediaUrl && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => { e.stopPropagation(); openReceipt(transaction.mediaUrl) }}
+                        className="h-8 px-3 text-xs bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 text-green-700 dark:text-green-400"
+                      >
+                        {transactionsPageTranslations?.transaction?.seeReceipt || 'See receipt'}
+                      </Button>
+                    )}
                   </div>
                 </div>
 
@@ -318,9 +345,14 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
                               </div>
                             )}
                             {transaction.mediaUrl && (
-                              <a href={transaction.mediaUrl} target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-400 underline">
-                                Media
-                              </a>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={(e) => { e.stopPropagation(); openReceipt(transaction.mediaUrl) }}
+                                className="h-7 px-3 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 text-green-700 dark:text-green-400"
+                              >
+                                {transactionsPageTranslations?.transaction?.seeReceipt || 'See receipt'}
+                              </Button>
                             )}
                             <span className={`font-medium px-2 py-1 rounded-full text-xs ${getStatusColor(transaction.status)} bg-opacity-10`}>
                               {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
@@ -480,7 +512,7 @@ function EditTransactionModal({ transaction, onSave, onClose, translations }: Ed
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block text.sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               {translations?.transaction?.category || 'Category'}
             </label>
             <select
