@@ -16,9 +16,10 @@ interface LoggedPageProps {
     user: userData;
     onUserNameSet: () => void;
     translations: any;
+    loggedDashboardTranslations: any;
 }
 
-export default function LoggedPage({ logoutText, user, onUserNameSet, translations }: LoggedPageProps) {
+export default function LoggedPage({ logoutText, user, onUserNameSet, translations, loggedDashboardTranslations }: LoggedPageProps) {
     const [currentPath, setCurrentPath] = useState<string>('');
     const [language, setLanguage] = useState<string>('');
     const [showFitoIntro, setShowFitoIntro] = useState<boolean>(true);
@@ -67,9 +68,9 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                     />
                                     <div>
                                         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                                            Welcome back, {user.userData.userName}!
+                                            {loggedDashboardTranslations?.welcome?.replace('{userName}', user.userData.userName) || `Welcome back, ${user.userData.userName}!`}
                                         </h1>
-                                        <p className="text-gray-600 dark:text-gray-300">Here's your dashboard overview</p>
+                                        <p className="text-gray-600 dark:text-gray-300">{loggedDashboardTranslations?.dashboardOverview || "Here's your dashboard overview"}</p>
                                     </div>
                                 </div>
                                 <PhoneSetupAndVerify user={user} translations={translations} onRefresh={handleRefresh} />
@@ -84,7 +85,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                 >
                                     <a href={`/${language}/user-info`}>
                                         <User className="h-4 w-4" />
-                                        User Information
+                                        {loggedDashboardTranslations?.userInformation || 'User Information'}
                                     </a>
                                 </Button>
                                 <Button
@@ -94,7 +95,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                 >
                                     <a href={`/${language}/email-management`}>
                                         <Mail className="h-4 w-4" />
-                                        Email Management
+                                        {loggedDashboardTranslations?.emailManagement || 'Email Management'}
                                     </a>
                                 </Button>
                                 <Button
@@ -104,7 +105,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                 >
                                     <a href={`/${language}/transactions`}>
                                         <CreditCard className="h-4 w-4" />
-                                        Your Transactions
+                                        {loggedDashboardTranslations?.yourTransactions || 'Your Transactions'}
                                     </a>
                                 </Button>
                                 <Button
@@ -114,7 +115,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                 >
                                     <a href={`/${language}/event-history`}>
                                         <History className="h-4 w-4" />
-                                        Event History
+                                        {loggedDashboardTranslations?.eventHistory || 'Event History'}
                                     </a>
                                 </Button>
                             </div>
@@ -142,13 +143,10 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                         </div>
                                         <div className="flex-1">
                                             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                                                Meet Fito - Your Personal Finance AI Assistant
+                                                {loggedDashboardTranslations?.meetFito?.title || 'Meet Fito - Your Personal Finance AI Assistant'}
                                             </h2>
                                             <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                                Fito is a WhatsApp bot that makes tracking your daily expenses incredibly easy.
-                                                Simply send screenshots, images, audio messages, or text messages of things you pay for,
-                                                and Fito will automatically categorize and track your transactions. You can also receive
-                                                transactions via email for seamless financial management.
+                                                {loggedDashboardTranslations?.meetFito?.description || 'Fito is a WhatsApp bot that makes tracking your daily expenses incredibly easy. Simply send screenshots, images, audio messages, or text messages of things you pay for, and Fito will automatically categorize and track your transactions. You can also receive transactions via email for seamless financial management.'}
                                             </p>
                                         </div>
                                     </div>
@@ -157,29 +155,29 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
                                         <div className="flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                             <Camera className="h-5 w-5 text-blue-600" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Receipt Photos</span>
+                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{loggedDashboardTranslations?.meetFito?.receiptPhotos || 'Receipt Photos'}</span>
                                         </div>
                                         <div className="flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                             <Monitor className="h-5 w-5 text-indigo-600" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Screenshot Receipts</span>
+                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{loggedDashboardTranslations?.meetFito?.screenshotReceipts || 'Screenshot Receipts'}</span>
                                         </div>
                                         <div className="flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                             <MessageSquare className="h-5 w-5 text-green-600" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Text Messages</span>
+                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{loggedDashboardTranslations?.meetFito?.textMessages || 'Text Messages'}</span>
                                         </div>
                                         <div className="flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                             <Mic className="h-5 w-5 text-purple-600" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Audio Messages</span>
+                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{loggedDashboardTranslations?.meetFito?.audioMessages || 'Audio Messages'}</span>
                                         </div>
                                         <div className="flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                                             <Mail className="h-5 w-5 text-orange-600" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Email Receipts</span>
+                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{loggedDashboardTranslations?.meetFito?.emailReceipts || 'Email Receipts'}</span>
                                         </div>
                                         <div className="flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 opacity-60">
                                             <File className="h-5 w-5 text-gray-400" />
                                             <div className="flex flex-col">
-                                                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">PDF Documents</span>
-                                                <span className="text-xs text-gray-400 dark:text-gray-500">Coming Soon</span>
+                                                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{loggedDashboardTranslations?.meetFito?.pdfDocuments || 'PDF Documents'}</span>
+                                                <span className="text-xs text-gray-400 dark:text-gray-500">{loggedDashboardTranslations?.meetFito?.comingSoon || 'Coming Soon'}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -197,7 +195,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                                 className="flex items-center justify-center gap-2"
                                             >
                                                 <MessageSquare className="h-4 w-4" />
-                                                Go to WhatsApp
+                                                {loggedDashboardTranslations?.meetFito?.goToWhatsapp || 'Go to WhatsApp'}
                                                 <ExternalLink className="h-3 w-3" />
                                             </a>
                                         </Button>
@@ -213,7 +211,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                                 className="flex items-center justify-center gap-2"
                                             >
                                                 <Mail className="h-4 w-4" />
-                                                Go to Email
+                                                {loggedDashboardTranslations?.meetFito?.goToEmail || 'Go to Email'}
                                                 <ExternalLink className="h-3 w-3" />
                                             </a>
                                         </Button>
@@ -224,12 +222,12 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                             <Mail className="h-4 w-4 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" />
                                             <div>
                                                 <p className="text-sm text-orange-800 dark:text-orange-200 font-medium mb-1">
-                                                    Email Setup Required
+                                                    {loggedDashboardTranslations?.meetFito?.emailSetupRequired || 'Email Setup Required'}
                                                 </p>
                                                 <p className="text-xs text-orange-700 dark:text-orange-300">
-                                                    To use email receipts, first configure your email in the
+                                                    {loggedDashboardTranslations?.meetFito?.emailSetupDescription || 'To use email receipts, first configure your email in the'}
                                                     <a href={`/${language}/email-management`} className="underline hover:no-underline ml-1">
-                                                        Email Management page
+                                                        {loggedDashboardTranslations?.meetFito?.emailManagementPage || 'Email Management page'}
                                                     </a>
                                                 </p>
                                             </div>
@@ -254,12 +252,10 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                             <Clock className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                                             <div>
                                                 <h3 className="text-sm font-semibold text-amber-800 dark:text-amber-200 mb-1">
-                                                    Development in Progress
+                                                    {loggedDashboardTranslations?.developmentInProgress?.title || 'Development in Progress'}
                                                 </h3>
                                                 <p className="text-sm text-amber-700 dark:text-amber-300">
-                                                    The data below is dummy data showing what you'll have in the future. We're still building
-                                                    the core features! Currently available: <strong>Transaction Management</strong> and
-                                                    <strong> Event History</strong>. More financial tools coming soon!
+                                                    {loggedDashboardTranslations?.developmentInProgress?.description || 'The data below is dummy data showing what you\'ll have in the future. We\'re still building the core features!'} <strong>{loggedDashboardTranslations?.developmentInProgress?.transactionManagement || 'Transaction Management'}</strong> and <strong>{loggedDashboardTranslations?.developmentInProgress?.eventHistory || 'Event History'}</strong>. More financial tools coming soon!
                                                 </p>
                                             </div>
                                         </div>
@@ -272,9 +268,9 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                         <CardContent className="p-6">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Monthly Expenses</p>
+                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.monthlyExpenses || 'Monthly Expenses'}</p>
                                                     <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">$2,450</p>
-                                                    <p className="text-xs text-red-600 dark:text-red-400">+12% from last month</p>
+                                                    <p className="text-xs text-red-600 dark:text-red-400">+12% {loggedDashboardTranslations?.financialOverview?.fromLastMonth || 'from last month'}</p>
                                                 </div>
                                                 <div className="h-8 w-8 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
                                                     <TrendingUp className="h-4 w-4 text-red-600 dark:text-red-400" />
@@ -287,9 +283,9 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                         <CardContent className="p-6">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Transactions Tracked</p>
+                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.transactionsTracked || 'Transactions Tracked'}</p>
                                                     <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">47</p>
-                                                    <p className="text-xs text-blue-600 dark:text-blue-400">This month via Fito</p>
+                                                    <p className="text-xs text-blue-600 dark:text-blue-400">{loggedDashboardTranslations?.financialOverview?.thisMonthViaFito || 'This month via Fito'}</p>
                                                 </div>
                                                 <div className="h-8 w-8 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
                                                     <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -302,9 +298,9 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                         <CardContent className="p-6">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Spending Categories</p>
+                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.spendingCategories || 'Spending Categories'}</p>
                                                     <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">8</p>
-                                                    <p className="text-xs text-purple-600 dark:text-purple-400">Auto-categorized</p>
+                                                    <p className="text-xs text-purple-600 dark:text-purple-400">{loggedDashboardTranslations?.financialOverview?.autoCategorized || 'Auto-categorized'}</p>
                                                 </div>
                                                 <div className="h-8 w-8 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
                                                     <Shield className="h-4 w-4 text-purple-600 dark:text-purple-400" />
@@ -317,9 +313,9 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                         <CardContent className="p-6">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Savings Rate</p>
+                                                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.savingsRate || 'Savings Rate'}</p>
                                                     <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">23%</p>
-                                                    <p className="text-xs text-green-600 dark:text-green-400">+5% this month</p>
+                                                    <p className="text-xs text-green-600 dark:text-green-400">+5% {loggedDashboardTranslations?.financialOverview?.thisMonth || 'this month'}</p>
                                                 </div>
                                                 <div className="h-8 w-8 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
                                                     <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
@@ -337,7 +333,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                             <CardHeader>
                                                 <CardTitle className="flex items-center gap-2">
                                                     <TrendingUp className="h-5 w-5 text-blue-600" />
-                                                    Monthly Expenses Trend
+                                                    {loggedDashboardTranslations?.charts?.monthlyExpensesTrend || 'Monthly Expenses Trend'}
                                                 </CardTitle>
                                             </CardHeader>
                                             <CardContent>
@@ -350,7 +346,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                             <CardHeader>
                                                 <CardTitle className="flex items-center gap-2">
                                                     <Shield className="h-5 w-5 text-purple-600" />
-                                                    Spending by Category
+                                                    {loggedDashboardTranslations?.charts?.spendingByCategory || 'Spending by Category'}
                                                 </CardTitle>
                                             </CardHeader>
                                             <CardContent>
@@ -363,7 +359,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                             <CardHeader>
                                                 <CardTitle className="flex items-center gap-2">
                                                     <Clock className="h-5 w-5 text-green-600" />
-                                                    Weekly Spending Pattern
+                                                    {loggedDashboardTranslations?.charts?.weeklySpendingPattern || 'Weekly Spending Pattern'}
                                                 </CardTitle>
                                             </CardHeader>
                                             <CardContent>
@@ -376,7 +372,7 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                             <CardHeader>
                                                 <CardTitle className="flex items-center gap-2">
                                                     <FileText className="h-5 w-5 text-orange-600" />
-                                                    Income vs Expenses
+                                                    {loggedDashboardTranslations?.charts?.incomeVsExpenses || 'Income vs Expenses'}
                                                 </CardTitle>
                                             </CardHeader>
                                             <CardContent>

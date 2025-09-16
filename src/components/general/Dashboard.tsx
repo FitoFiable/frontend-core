@@ -8,9 +8,10 @@ interface DashboardProps {
     loginText: string;
     logoutText: string;
     translations: any;
+    loggedDashboardTranslations: any;
 }
 
-export default function Dashboard({ loginText, logoutText, translations }: DashboardProps) {
+export default function Dashboard({ loginText, logoutText, translations, loggedDashboardTranslations }: DashboardProps) {
     const [user, setUser] = useState<userData | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -58,6 +59,7 @@ export default function Dashboard({ loginText, logoutText, translations }: Dashb
                     user={user}
                     onUserNameSet={handleUserNameSet}
                     translations={translations}
+                    loggedDashboardTranslations={loggedDashboardTranslations}
                 />
             ) : (
                 <UnloggedPage 

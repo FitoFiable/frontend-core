@@ -7,6 +7,7 @@ import { ArrowLeft, CreditCard, TrendingUp, TrendingDown, Calendar, MapPin, Tag,
 
 interface TransactionsPageProps {
   homePageTranslations?: any;
+  transactionsPageTranslations?: any;
 }
 
 interface Transaction {
@@ -22,7 +23,7 @@ interface Transaction {
   status: 'completed' | 'pending' | 'failed';
 }
 
-export default function TransactionsPage({ homePageTranslations }: TransactionsPageProps) {
+export default function TransactionsPage({ homePageTranslations, transactionsPageTranslations }: TransactionsPageProps) {
   const [user, setUser] = useState<userData | null>(null);
   const [loading, setLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -281,9 +282,9 @@ export default function TransactionsPage({ homePageTranslations }: TransactionsP
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 mt-5 min-h-screen">
-        <p>Please log in to view your transactions.</p>
+        <p>{transactionsPageTranslations?.pleaseLogIn || 'Please log in to view your transactions.'}</p>
         <Button onClick={() => window.location.href = '/'}>
-          Go to Login
+          {transactionsPageTranslations?.goToLogin || 'Go to Login'}
         </Button>
       </div>
     );
@@ -302,16 +303,16 @@ export default function TransactionsPage({ homePageTranslations }: TransactionsP
             >
               <a href={`/${getLanguageFromPath()}`}>
                 <ArrowLeft className="h-4 w-4" />
-                <span className="hidden xs:inline">Back to Dashboard</span>
-                <span className="xs:hidden">Back</span>
+                <span className="hidden xs:inline">{transactionsPageTranslations?.backToDashboard || 'Back to Dashboard'}</span>
+                <span className="xs:hidden">{transactionsPageTranslations?.back || 'Back'}</span>
               </a>
             </Button>
             <div className="flex-1">
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">
-                Your Transactions
+                {transactionsPageTranslations?.title || 'Your Transactions'}
               </h1>
               <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base mt-1">
-                View and manage your financial transactions
+                {transactionsPageTranslations?.subtitle || 'View and manage your financial transactions'}
               </p>
             </div>
           </div>
@@ -323,7 +324,7 @@ export default function TransactionsPage({ homePageTranslations }: TransactionsP
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Total Expenses</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">{transactionsPageTranslations?.summary?.totalExpenses || 'Total Expenses'}</p>
                   <p className="text-lg sm:text-xl lg:text-2xl font-bold text-red-600 dark:text-red-400 truncate">$1,850,000</p>
                 </div>
                 <TrendingDown className="h-6 w-6 sm:h-8 sm:w-8 text-red-500 flex-shrink-0" />
@@ -335,7 +336,7 @@ export default function TransactionsPage({ homePageTranslations }: TransactionsP
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Total Income</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">{transactionsPageTranslations?.summary?.totalIncome || 'Total Income'}</p>
                   <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600 dark:text-green-400 truncate">$2,500,000</p>
                 </div>
                 <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-green-500 flex-shrink-0" />
@@ -347,7 +348,7 @@ export default function TransactionsPage({ homePageTranslations }: TransactionsP
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">Net Balance</p>
+                  <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">{transactionsPageTranslations?.summary?.netBalance || 'Net Balance'}</p>
                   <p className="text-lg sm:text-xl lg:text-2xl font-bold text-blue-600 dark:text-blue-400 truncate">$650,000</p>
                 </div>
                 <CreditCard className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 flex-shrink-0" />
@@ -422,7 +423,7 @@ export default function TransactionsPage({ homePageTranslations }: TransactionsP
                       className="h-8 px-3 text-xs bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400"
                     >
                       <Eye className="h-3 w-3 mr-1" />
-                      Details
+                      {transactionsPageTranslations?.transaction?.details || 'Details'}
                     </Button>
                   </div>
                 </div>
@@ -480,7 +481,7 @@ export default function TransactionsPage({ homePageTranslations }: TransactionsP
                             className="h-9 px-4 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30"
                           >
                             <Eye className="h-4 w-4 mr-2" />
-                            View Details
+                            {transactionsPageTranslations?.transaction?.viewDetails || 'View Details'}
                           </Button>
                         </div>
                       </div>
@@ -495,7 +496,7 @@ export default function TransactionsPage({ homePageTranslations }: TransactionsP
         {/* Load More Button */}
         <div className="mt-8 text-center">
           <Button variant="outline" className="px-8">
-            Load More Transactions
+            {transactionsPageTranslations?.loadMore || 'Load More Transactions'}
           </Button>
         </div>
       </div>
@@ -506,6 +507,7 @@ export default function TransactionsPage({ homePageTranslations }: TransactionsP
           transaction={editingTransaction}
           onSave={handleSaveTransaction}
           onClose={handleCloseModal}
+          translations={transactionsPageTranslations}
         />
       )}
     </div>
@@ -517,9 +519,10 @@ interface EditTransactionModalProps {
   transaction: Transaction;
   onSave: (transaction: Transaction) => void;
   onClose: () => void;
+  translations?: any;
 }
 
-function EditTransactionModal({ transaction, onSave, onClose }: EditTransactionModalProps) {
+function EditTransactionModal({ transaction, onSave, onClose, translations }: EditTransactionModalProps) {
   const [formData, setFormData] = useState({
     type: transaction.type,
     amount: Math.abs(transaction.amount),
@@ -561,7 +564,7 @@ function EditTransactionModal({ transaction, onSave, onClose }: EditTransactionM
       <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/20 dark:border-gray-700/50 w-full max-w-md max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200/50 dark:border-gray-700/50 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-t-xl">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-gray-100">
-            Transaction Details
+            {translations?.transaction?.transactionDetails || 'Transaction Details'}
           </h2>
           <Button
             variant="ghost"
@@ -577,30 +580,30 @@ function EditTransactionModal({ transaction, onSave, onClose }: EditTransactionM
           {/* Transaction Type */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Type
+              {translations?.transaction?.type || 'Type'}
             </label>
             <select
               value={formData.type}
               onChange={(e) => handleChange('type', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
             >
-              <option value="expense">Expense</option>
-              <option value="income">Income</option>
-              <option value="transfer">Transfer</option>
+              <option value="expense">{translations?.types?.expense || 'Expense'}</option>
+              <option value="income">{translations?.types?.income || 'Income'}</option>
+              <option value="transfer">{translations?.types?.transfer || 'Transfer'}</option>
             </select>
           </div>
 
           {/* Amount */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Amount
+              {translations?.transaction?.amount || 'Amount'}
             </label>
             <input
               type="number"
               value={formData.amount}
               onChange={(e) => handleChange('amount', parseFloat(e.target.value) || 0)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder="Enter amount"
+              placeholder={translations?.transaction?.enterAmount || 'Enter amount'}
               min="0"
               step="0.01"
             />
@@ -609,35 +612,35 @@ function EditTransactionModal({ transaction, onSave, onClose }: EditTransactionM
           {/* Description */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Description
+              {translations?.transaction?.description || 'Description'}
             </label>
             <input
               type="text"
               value={formData.description}
               onChange={(e) => handleChange('description', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder="Enter description"
+              placeholder={translations?.transaction?.enterDescription || 'Enter description'}
             />
           </div>
 
           {/* Category */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Category
+              {translations?.transaction?.category || 'Category'}
             </label>
             <select
               value={formData.category}
               onChange={(e) => handleChange('category', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
             >
-              <option value="Food & Dining">Food & Dining</option>
-              <option value="Transportation">Transportation</option>
-              <option value="Shopping">Shopping</option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Entertainment">Entertainment</option>
-              <option value="Bills & Utilities">Bills & Utilities</option>
-              <option value="Salary">Salary</option>
-              <option value="Transfer">Transfer</option>
+              <option value="Food & Dining">{translations?.categories?.foodDining || 'Food & Dining'}</option>
+              <option value="Transportation">{translations?.categories?.transportation || 'Transportation'}</option>
+              <option value="Shopping">{translations?.categories?.shopping || 'Shopping'}</option>
+              <option value="Healthcare">{translations?.categories?.healthcare || 'Healthcare'}</option>
+              <option value="Entertainment">{translations?.categories?.entertainment || 'Entertainment'}</option>
+              <option value="Bills & Utilities">{translations?.categories?.billsUtilities || 'Bills & Utilities'}</option>
+              <option value="Salary">{translations?.categories?.salary || 'Salary'}</option>
+              <option value="Transfer">{translations?.categories?.transfer || 'Transfer'}</option>
             </select>
           </div>
 
@@ -645,7 +648,7 @@ function EditTransactionModal({ transaction, onSave, onClose }: EditTransactionM
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Date
+                {translations?.transaction?.date || 'Date'}
               </label>
               <input
                 type="date"
@@ -656,7 +659,7 @@ function EditTransactionModal({ transaction, onSave, onClose }: EditTransactionM
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Time
+                {translations?.transaction?.time || 'Time'}
               </label>
               <input
                 type="time"
@@ -670,47 +673,47 @@ function EditTransactionModal({ transaction, onSave, onClose }: EditTransactionM
           {/* Location */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Location (Optional)
+              {translations?.transaction?.locationOptional || 'Location (Optional)'}
             </label>
             <input
               type="text"
               value={formData.location}
               onChange={(e) => handleChange('location', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-              placeholder="Enter location"
+              placeholder={translations?.transaction?.enterLocation || 'Enter location'}
             />
           </div>
 
           {/* Payment Method */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Payment Method
+              {translations?.transaction?.paymentMethod || 'Payment Method'}
             </label>
             <select
               value={formData.method}
               onChange={(e) => handleChange('method', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
             >
-              <option value="card">Card</option>
-              <option value="cash">Cash</option>
-              <option value="transfer">Transfer</option>
-              <option value="whatsapp">WhatsApp</option>
+              <option value="card">{translations?.methods?.card || 'Card'}</option>
+              <option value="cash">{translations?.methods?.cash || 'Cash'}</option>
+              <option value="transfer">{translations?.methods?.transfer || 'Transfer'}</option>
+              <option value="whatsapp">{translations?.methods?.whatsapp || 'WhatsApp'}</option>
             </select>
           </div>
 
           {/* Status */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Status
+              {translations?.transaction?.status || 'Status'}
             </label>
             <select
               value={formData.status}
               onChange={(e) => handleChange('status', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
             >
-              <option value="completed">Completed</option>
-              <option value="pending">Pending</option>
-              <option value="failed">Failed</option>
+              <option value="completed">{translations?.statuses?.completed || 'Completed'}</option>
+              <option value="pending">{translations?.statuses?.pending || 'Pending'}</option>
+              <option value="failed">{translations?.statuses?.failed || 'Failed'}</option>
             </select>
           </div>
 
@@ -722,13 +725,13 @@ function EditTransactionModal({ transaction, onSave, onClose }: EditTransactionM
               onClick={onClose}
               className="flex-1 order-2 sm:order-1"
             >
-              Cancel
+              {translations?.transaction?.cancel || 'Cancel'}
             </Button>
             <Button
               type="submit"
               className="flex-1 order-1 sm:order-2"
             >
-              Save Changes
+              {translations?.transaction?.saveChanges || 'Save Changes'}
             </Button>
           </div>
         </form>

@@ -10,6 +10,14 @@ import { homePage as deHomePage } from '@/i18n/de/homePage';
 import { homePage as itHomePage } from '@/i18n/it/homePage';
 import { homePage as ptHomePage } from '@/i18n/pt/homePage';
 
+// Import all language translations for loggedDashboardPage
+import { loggedDashboardPage as enLoggedDashboardPage } from '@/i18n/en/loggedDashboardPage';
+import { loggedDashboardPage as esLoggedDashboardPage } from '@/i18n/es/loggedDashboardPage';
+import { loggedDashboardPage as frLoggedDashboardPage } from '@/i18n/fr/loggedDashboardPage';
+import { loggedDashboardPage as deLoggedDashboardPage } from '@/i18n/de/loggedDashboardPage';
+import { loggedDashboardPage as itLoggedDashboardPage } from '@/i18n/it/loggedDashboardPage';
+import { loggedDashboardPage as ptLoggedDashboardPage } from '@/i18n/pt/loggedDashboardPage';
+
 export async function getStaticPaths() {
   return [
     { params: { lang: 'en' } },
@@ -42,9 +50,29 @@ const getTranslations = (language: string) => {
   }
 };
 
+// Get loggedDashboardPage translations based on language
+const getLoggedDashboardPageTranslations = (language: string) => {
+  switch (language) {
+    case 'es':
+      return esLoggedDashboardPage;
+    case 'fr':
+      return frLoggedDashboardPage;
+    case 'de':
+      return deLoggedDashboardPage;
+    case 'it':
+      return itLoggedDashboardPage;
+    case 'pt':
+      return ptLoggedDashboardPage;
+    case 'en':
+    default:
+      return enLoggedDashboardPage;
+  }
+};
+
 const translations = getTranslations(lang || 'en');
+const loggedDashboardTranslations = getLoggedDashboardPageTranslations(lang || 'en');
 ---
 
 <Layout>
-	<Dashboard client:load loginText={translations.loginText} logoutText={translations.logoutText} translations={translations} />
+	<Dashboard client:load loginText={translations.loginText} logoutText={translations.logoutText} translations={translations} loggedDashboardTranslations={loggedDashboardTranslations} />
 </Layout>

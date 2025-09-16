@@ -10,6 +10,14 @@ import { homePage as deHomePage } from '@/i18n/de/homePage';
 import { homePage as itHomePage } from '@/i18n/it/homePage';
 import { homePage as ptHomePage } from '@/i18n/pt/homePage';
 
+// Import all language translations for eventHistoryPage
+import { eventHistoryPage as enEventHistoryPage } from '@/i18n/en/eventHistoryPage';
+import { eventHistoryPage as esEventHistoryPage } from '@/i18n/es/eventHistoryPage';
+import { eventHistoryPage as frEventHistoryPage } from '@/i18n/fr/eventHistoryPage';
+import { eventHistoryPage as deEventHistoryPage } from '@/i18n/de/eventHistoryPage';
+import { eventHistoryPage as itEventHistoryPage } from '@/i18n/it/eventHistoryPage';
+import { eventHistoryPage as ptEventHistoryPage } from '@/i18n/pt/eventHistoryPage';
+
 export async function getStaticPaths() {
   return [
     { params: { lang: 'en' } },
@@ -42,12 +50,33 @@ const getHomePageTranslations = (language: string) => {
   }
 };
 
+// Get eventHistoryPage translations based on language
+const getEventHistoryPageTranslations = (language: string) => {
+  switch (language) {
+    case 'es':
+      return esEventHistoryPage;
+    case 'fr':
+      return frEventHistoryPage;
+    case 'de':
+      return deEventHistoryPage;
+    case 'it':
+      return itEventHistoryPage;
+    case 'pt':
+      return ptEventHistoryPage;
+    case 'en':
+    default:
+      return enEventHistoryPage;
+  }
+};
+
 const homePageTranslations = getHomePageTranslations(lang || 'en');
+const eventHistoryPageTranslations = getEventHistoryPageTranslations(lang || 'en');
 ---
 
 <Layout>
 	<EventHistoryPageComponent 
 		client:load 
 		homePageTranslations={homePageTranslations}
+		eventHistoryPageTranslations={eventHistoryPageTranslations}
 	/>
 </Layout>

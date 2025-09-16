@@ -7,6 +7,7 @@ import { ArrowLeft, Clock, Mail, Phone, User, CreditCard, AlertCircle, CheckCirc
 
 interface EventHistoryPageProps {
   homePageTranslations?: any;
+  eventHistoryPageTranslations?: any;
 }
 
 interface HistoryEvent {
@@ -18,7 +19,7 @@ interface HistoryEvent {
   status: 'success' | 'warning' | 'error' | 'info';
 }
 
-export default function EventHistoryPage({ homePageTranslations }: EventHistoryPageProps) {
+export default function EventHistoryPage({ homePageTranslations, eventHistoryPageTranslations }: EventHistoryPageProps) {
   const [user, setUser] = useState<userData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -192,9 +193,9 @@ export default function EventHistoryPage({ homePageTranslations }: EventHistoryP
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 mt-5 min-h-screen">
-        <p>Please log in to view event history.</p>
+        <p>{eventHistoryPageTranslations?.pleaseLogIn || 'Please log in to view event history.'}</p>
         <Button onClick={() => window.location.href = '/'}>
-          Go to Login
+          {eventHistoryPageTranslations?.goToLogin || 'Go to Login'}
         </Button>
       </div>
     );
@@ -213,15 +214,15 @@ export default function EventHistoryPage({ homePageTranslations }: EventHistoryP
             >
               <a href={`/${getLanguageFromPath()}`}>
                 <ArrowLeft className="h-4 w-4" />
-                Back to Dashboard
+                {eventHistoryPageTranslations?.backToDashboard || 'Back to Dashboard'}
               </a>
             </Button>
             <div className="flex-1">
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100">
-                Event History
+                {eventHistoryPageTranslations?.title || 'Event History'}
               </h1>
               <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base">
-                View your account activity and system events
+                {eventHistoryPageTranslations?.subtitle || 'View your account activity and system events'}
               </p>
             </div>
           </div>
@@ -264,7 +265,7 @@ export default function EventHistoryPage({ homePageTranslations }: EventHistoryP
         {/* Load More Button */}
         <div className="mt-8 text-center">
           <Button variant="outline" className="px-8">
-            Load More Events
+            {eventHistoryPageTranslations?.loadMore || 'Load More Events'}
           </Button>
         </div>
       </div>
