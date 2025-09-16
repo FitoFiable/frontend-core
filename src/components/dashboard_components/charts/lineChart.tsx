@@ -2,12 +2,13 @@ import React from 'react';
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const data = [
-  { name: 'Week 1', messages: 120, calls: 80 },
-  { name: 'Week 2', messages: 200, calls: 150 },
-  { name: 'Week 3', messages: 180, calls: 120 },
-  { name: 'Week 4', messages: 250, calls: 200 },
-  { name: 'Week 5', messages: 300, calls: 180 },
-  { name: 'Week 6', messages: 280, calls: 220 },
+  { day: 'Mon', spending: 45000 },
+  { day: 'Tue', spending: 62000 },
+  { day: 'Wed', spending: 38000 },
+  { day: 'Thu', spending: 75000 },
+  { day: 'Fri', spending: 95000 },
+  { day: 'Sat', spending: 120000 },
+  { day: 'Sun', spending: 85000 },
 ];
 
 export default function LineChart() {
@@ -15,12 +16,21 @@ export default function LineChart() {
     <div className="w-full h-64">
       <ResponsiveContainer width="100%" height="100%">
         <RechartsLineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Line type="monotone" dataKey="messages" stroke="#8884d8" strokeWidth={2} />
-          <Line type="monotone" dataKey="calls" stroke="#82ca9d" strokeWidth={2} />
+          <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+          <XAxis dataKey="day" />
+          <YAxis tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`} />
+          <Tooltip 
+            formatter={(value) => [`$${value.toLocaleString()}`, 'Spending']}
+            labelFormatter={(label) => `Day: ${label}`}
+          />
+          <Line 
+            type="monotone" 
+            dataKey="spending" 
+            stroke="#3b82f6" 
+            strokeWidth={3}
+            dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
+            activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
+          />
         </RechartsLineChart>
       </ResponsiveContainer>
     </div>

@@ -2,7 +2,7 @@ import { apiHealthCheck, apiGetUser } from "@/lib/core-api";
 import { useEffect, useState } from "react";
 import type { userData } from "@/lib/core-api";
 import UnloggedPage from "../dashboard_components/UnloggedPage";
-import LoggedPage from "../dashboard_components/LoggedPage";
+import LoggedPage from "../dashboard_components/LoggedDashboardPage";
 
 interface DashboardProps {
     loginText: string;
