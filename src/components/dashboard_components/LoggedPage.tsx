@@ -9,9 +9,6 @@ import LineChart from "./charts/lineChart";
 import PieChart from "./charts/pieChart";
 import AreaChart from "./charts/areaChart";
 import { MessageStatsCard, UserStatsCard, CallStatsCard, GrowthStatsCard } from "./charts/statsCard";
-import EmailManager from "./EmailManager";
-import UserInfoPage from "./UserInfoPage";
-import EmailManagementPage from "./EmailManagementPage";
 import { User, Mail } from 'lucide-react';
 
 interface LoggedPageProps {
@@ -24,7 +21,6 @@ interface LoggedPageProps {
 export default function LoggedPage({ logoutText, user, onUserNameSet, translations }: LoggedPageProps) {
     const [currentPath, setCurrentPath] = useState<string>('');
     const [language, setLanguage] = useState<string>('');
-    const [currentPage, setCurrentPage] = useState<'dashboard' | 'userInfo' | 'emailManagement'>('dashboard');
 
     useEffect(() => {
         // Set client-side values after component mounts
@@ -35,10 +31,6 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
     }, []);
 
     const handleRefresh = () => onUserNameSet();
-
-    const handleBackToDashboard = () => setCurrentPage('dashboard');
-    const handleGoToUserInfo = () => setCurrentPage('userInfo');
-    const handleGoToEmailManagement = () => setCurrentPage('emailManagement');
 
     return (
         <div className="relative min-h-screen">
@@ -60,19 +52,6 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                     <div className="flex flex-col items-center justify-center min-h-screen">
                         <SetUserName onUserNameSet={onUserNameSet} translations={translations} />
                     </div>
-                ) : currentPage === 'userInfo' ? (
-                    <UserInfoPage 
-                        user={user} 
-                        translations={translations} 
-                        onBackToDashboard={handleBackToDashboard} 
-                    />
-                ) : currentPage === 'emailManagement' ? (
-                    <EmailManagementPage 
-                        user={user} 
-                        translations={translations} 
-                        onBackToDashboard={handleBackToDashboard}
-                        onRefresh={handleRefresh}
-                    />
                 ) : (
                     <div className="container mx-auto px-4 py-8">
                         {/* Header Section */}
@@ -97,20 +76,24 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                             {/* Navigation Buttons */}
                             <div className="mt-6 flex gap-4">
                                 <Button
-                                    onClick={handleGoToUserInfo}
+                                    asChild
                                     variant="outline"
                                     className="flex items-center gap-2"
                                 >
-                                    <User className="h-4 w-4" />
-                                    User Information
+                                    <a href={`/${language}/user-info`}>
+                                        <User className="h-4 w-4" />
+                                        User Information
+                                    </a>
                                 </Button>
                                 <Button
-                                    onClick={handleGoToEmailManagement}
+                                    asChild
                                     variant="outline"
                                     className="flex items-center gap-2"
                                 >
-                                    <Mail className="h-4 w-4" />
-                                    Email Management
+                                    <a href={`/${language}/email-management`}>
+                                        <Mail className="h-4 w-4" />
+                                        Email Management
+                                    </a>
                                 </Button>
                             </div>
                         </div>

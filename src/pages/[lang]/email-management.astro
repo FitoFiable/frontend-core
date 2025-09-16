@@ -1,0 +1,82 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import EmailManagementPageComponent from '@/components/dashboard_components/EmailManagementPage';
+
+// Import all language translations for homePage
+import { homePage as enHomePage } from '@/i18n/en/homePage';
+import { homePage as esHomePage } from '@/i18n/es/homePage';
+import { homePage as frHomePage } from '@/i18n/fr/homePage';
+import { homePage as deHomePage } from '@/i18n/de/homePage';
+import { homePage as itHomePage } from '@/i18n/it/homePage';
+import { homePage as ptHomePage } from '@/i18n/pt/homePage';
+
+// Import all language translations for emailManagementPage
+import { emailManagementPage as enEmailManagementPage } from '@/i18n/en/emailManagementPage';
+import { emailManagementPage as esEmailManagementPage } from '@/i18n/es/emailManagementPage';
+import { emailManagementPage as frEmailManagementPage } from '@/i18n/fr/emailManagementPage';
+import { emailManagementPage as deEmailManagementPage } from '@/i18n/de/emailManagementPage';
+import { emailManagementPage as itEmailManagementPage } from '@/i18n/it/emailManagementPage';
+import { emailManagementPage as ptEmailManagementPage } from '@/i18n/pt/emailManagementPage';
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'es' } },
+    { params: { lang: 'fr' } },
+    { params: { lang: 'de' } },
+    { params: { lang: 'it' } },
+    { params: { lang: 'pt' } },
+  ];
+}
+
+const { lang } = Astro.params;
+
+// Get homePage translations based on language
+const getHomePageTranslations = (language: string) => {
+  switch (language) {
+    case 'es':
+      return esHomePage;
+    case 'fr':
+      return frHomePage;
+    case 'de':
+      return deHomePage;
+    case 'it':
+      return itHomePage;
+    case 'pt':
+      return ptHomePage;
+    case 'en':
+    default:
+      return enHomePage;
+  }
+};
+
+// Get emailManagementPage translations based on language
+const getEmailManagementPageTranslations = (language: string) => {
+  switch (language) {
+    case 'es':
+      return esEmailManagementPage;
+    case 'fr':
+      return frEmailManagementPage;
+    case 'de':
+      return deEmailManagementPage;
+    case 'it':
+      return itEmailManagementPage;
+    case 'pt':
+      return ptEmailManagementPage;
+    case 'en':
+    default:
+      return enEmailManagementPage;
+  }
+};
+
+const homePageTranslations = getHomePageTranslations(lang || 'en');
+const emailManagementPageTranslations = getEmailManagementPageTranslations(lang || 'en');
+---
+
+<Layout>
+	<EmailManagementPageComponent 
+		client:load 
+		translations={emailManagementPageTranslations}
+		homePageTranslations={homePageTranslations}
+	/>
+</Layout>
