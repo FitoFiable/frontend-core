@@ -33,6 +33,11 @@ export type userTransaction = {
     status: 'completed' | 'pending' | 'failed'
 }
 
+export type transactionsConfig = {
+    categories: string[]
+    budgets: Record<string, number>
+}
+
 type successResponse = {
     data: any
     status: "OK"
@@ -148,6 +153,50 @@ export const apiGetTransactions = async (opts?: { limit?: number, cursor?: numbe
             message: response.statusText,
             status: "ERROR"
         }
+    }
+}
+
+export const apiGetTransactionsConfig = async (): Promise<apiResponse> => {
+    const response = await fetch(`${API_URL}/user/transactions/config`, {
+        method: "GET",
+        credentials: "include"
+    });
+    if (response.status === 200) {
+        return { data: await response.json() as transactionsConfig, status: "OK" }
+    } else if (response.status === 401) {
+        return { status: "UNAUTHENTICATED" }
+    } else {
+        return { message: response.statusText, status: "ERROR" }
+    }
+}
+
+export const apiSetTransactionsConfig = async (config: Partial<transactionsConfig>): Promise<apiResponse> => {
+    const response = await fetch(`${API_URL}/user/transactions/config`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(config)
+    });
+    if (response.status === 200) {
+        return { data: await response.json() as transactionsConfig, status: "OK" }
+    } else if (response.status === 401) {
+        return { status: "UNAUTHENTICATED" }
+    } else {
+        return { message: response.statusText, status: "ERROR" }
+    }
+}
+
+export const apiUpdateTransaction = async (id: string, patch: Partial<userTransaction>): Promise<apiResponse> => {
+    const response = await fetch(`${API_URL}/user/transactions/${id}`, {
+        method: "PATCH",
+        credentials: "include",
+        body: JSON.stringify(patch)
+    });
+    if (response.status === 200) {
+        return { data: await response.json() as userTransaction, status: "OK" }
+    } else if (response.status === 401) {
+        return { status: "UNAUTHENTICATED" }
+    } else {
+        return { message: response.statusText, status: "ERROR" }
     }
 }
 

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import type { userData } from "@/lib/core-api";
+import { useEffect, useMemo, useState } from "react";
+import type { userData, userTransaction, transactionsConfig } from "@/lib/core-api";
+import { apiGetTransactions, apiGetTransactionsConfig, apiSetTransactionsConfig } from "@/lib/core-api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SetUserName from "./SetUserName";
@@ -25,6 +26,12 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
     const [language, setLanguage] = useState<string>('');
     const [showFitoIntro, setShowFitoIntro] = useState<boolean>(true);
     const [showDummyDataAlert, setShowDummyDataAlert] = useState<boolean>(true);
+    const [transactions, setTransactions] = useState<userTransaction[]>([])
+    const [config, setConfig] = useState<transactionsConfig>({ categories: [], budgets: {} })
+    const [isSavingConfig, setIsSavingConfig] = useState<boolean>(false)
+    const [newCategory, setNewCategory] = useState<string>("")
+    const [newBudgetCategory, setNewBudgetCategory] = useState<string>("")
+    const [newBudgetAmount, setNewBudgetAmount] = useState<string>("")
 
     useEffect(() => {
         // Set client-side values after component mounts
@@ -33,6 +40,77 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
             setLanguage(localStorage.getItem('language') || 'en');
         }
     }, []);
+
+    useEffect(() => {
+        const load = async () => {
+            const t = await apiGetTransactions({ limit: 500 })
+            if (t.status === 'OK') {
+                const data = t.data.transactions as userTransaction[]
+                // newest first
+                const toTs = (tr: userTransaction) => new Date(`${tr.date}T${tr.time || '00:00'}:00`).getTime()
+                setTransactions([...data].sort((a,b)=>toTs(b)-toTs(a)))
+            }
+            const c = await apiGetTransactionsConfig()
+            if (c.status === 'OK') setConfig(c.data as transactionsConfig)
+        }
+        load()
+    }, [])
+
+    const totals = useMemo(() => {
+        let expenses = 0
+        let income = 0
+        for (const tr of transactions) {
+            if (tr.amount < 0) expenses += tr.amount
+            else income += tr.amount
+        }
+        const net = income + expenses
+        return {
+            expensesAbs: Math.abs(expenses),
+            income,
+            netAbs: Math.abs(net),
+            netNegative: net < 0
+        }
+    }, [transactions])
+
+    const spendByCategory = useMemo(() => {
+        const map = new Map<string, number>()
+        for (const tr of transactions) {
+            if (tr.amount < 0) {
+                const cat = tr.category || 'Uncategorized'
+                map.set(cat, (map.get(cat) || 0) + Math.abs(tr.amount))
+            }
+        }
+        return map
+    }, [transactions])
+
+    const handleAddCategory = async () => {
+        const name = newCategory.trim()
+        if (!name) return
+        const categories = Array.from(new Set([...(config.categories||[]), name]))
+        setIsSavingConfig(true)
+        const res = await apiSetTransactionsConfig({ categories })
+        setIsSavingConfig(false)
+        if (res.status === 'OK') {
+            setConfig(res.data as transactionsConfig)
+            setNewCategory("")
+        }
+    }
+
+    const handleSetBudget = async () => {
+        const cat = newBudgetCategory
+        const amt = parseFloat(newBudgetAmount)
+        if (!cat || isNaN(amt) || amt < 0) return
+        const budgets = { ...(config.budgets||{}) , [cat]: amt }
+        setIsSavingConfig(true)
+        const res = await apiSetTransactionsConfig({ budgets })
+        setIsSavingConfig(false)
+        if (res.status === 'OK') {
+            setConfig(res.data as transactionsConfig)
+            setNewBudgetAmount("")
+        }
+    }
+
+    const currency = (v: number) => `$${v.toLocaleString('es-CO')}`
 
     const handleRefresh = () => onUserNameSet();
 
@@ -165,16 +243,16 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                             </div>
                         )}
 
-                        {/* Financial Overview Cards */}
+                        {/* Financial Overview Cards (live) */}
                         {user.userData?.phoneVerified && (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                                 <Card>
                                     <CardContent className="p-6">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.monthlyExpenses || 'Monthly Expenses'}</p>
-                                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">$2,450</p>
-                                                <p className="text-xs text-red-600 dark:text-red-400">+12% {loggedDashboardTranslations?.financialOverview?.fromLastMonth || 'from last month'}</p>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.totalExpenses || 'Total Expenses'}</p>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{currency(totals.expensesAbs)}</p>
+                                                <p className="text-xs text-red-600 dark:text-red-400">{loggedDashboardTranslations?.financialOverview?.fromData || 'from data'}</p>
                                             </div>
                                             <div className="h-8 w-8 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
                                                 <TrendingUp className="h-4 w-4 text-red-600 dark:text-red-400" />
@@ -187,9 +265,9 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                     <CardContent className="p-6">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.transactionsTracked || 'Transactions Tracked'}</p>
-                                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">47</p>
-                                                <p className="text-xs text-blue-600 dark:text-blue-400">{loggedDashboardTranslations?.financialOverview?.thisMonthViaFito || 'This month via Fito'}</p>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.totalIncome || 'Total Income'}</p>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{currency(totals.income)}</p>
+                                                <p className="text-xs text-blue-600 dark:text-blue-400">{loggedDashboardTranslations?.financialOverview?.fromData || 'from data'}</p>
                                             </div>
                                             <div className="h-8 w-8 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
                                                 <MessageSquare className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -202,9 +280,9 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                     <CardContent className="p-6">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.spendingCategories || 'Spending Categories'}</p>
-                                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">8</p>
-                                                <p className="text-xs text-purple-600 dark:text-purple-400">{loggedDashboardTranslations?.financialOverview?.autoCategorized || 'Auto-categorized'}</p>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.netBalance || 'Net Balance'}</p>
+                                                <p className={`text-2xl font-bold ${totals.netNegative ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>{totals.netNegative ? '-' : ''}{currency(totals.netAbs)}</p>
+                                                <p className="text-xs text-purple-600 dark:text-purple-400">{loggedDashboardTranslations?.financialOverview?.fromData || 'from data'}</p>
                                             </div>
                                             <div className="h-8 w-8 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
                                                 <Shield className="h-4 w-4 text-purple-600 dark:text-purple-400" />
@@ -217,9 +295,9 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                     <CardContent className="p-6">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.savingsRate || 'Savings Rate'}</p>
-                                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">23%</p>
-                                                <p className="text-xs text-green-600 dark:text-green-400">+5% {loggedDashboardTranslations?.financialOverview?.thisMonth || 'this month'}</p>
+                                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{loggedDashboardTranslations?.financialOverview?.transactionsTracked || 'Transactions Tracked'}</p>
+                                                <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{transactions.length}</p>
+                                                <p className="text-xs text-green-600 dark:text-green-400">{loggedDashboardTranslations?.financialOverview?.fromData || 'from data'}</p>
                                             </div>
                                             <div className="h-8 w-8 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
                                                 <TrendingUp className="h-4 w-4 text-green-600 dark:text-green-400" />
@@ -230,58 +308,71 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                             </div>
                         )}
 
-                        {/* Financial Analytics Charts */}
+                        {/* Budgets by Category (live) */}
                         {user.userData?.phoneVerified && (
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                                {/* Monthly Expenses Trend */}
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2">
-                                            <TrendingUp className="h-5 w-5 text-blue-600" />
-                                            {loggedDashboardTranslations?.charts?.monthlyExpensesTrend || 'Monthly Expenses Trend'}
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <DummyBarChart />
-                                    </CardContent>
-                                </Card>
-
-                                {/* Spending by Category */}
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2">
-                                            <Shield className="h-5 w-5 text-purple-600" />
-                                            {loggedDashboardTranslations?.charts?.spendingByCategory || 'Spending by Category'}
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <PieChart />
-                                    </CardContent>
-                                </Card>
-
-                                {/* Weekly Spending Pattern */}
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2">
-                                            <Clock className="h-5 w-5 text-green-600" />
-                                            {loggedDashboardTranslations?.charts?.weeklySpendingPattern || 'Weekly Spending Pattern'}
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <LineChart />
-                                    </CardContent>
-                                </Card>
-
-                                {/* Income vs Expenses */}
+                            <div className="grid grid-cols-1 gap-6 mb-8">
                                 <Card>
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2">
                                             <FileText className="h-5 w-5 text-orange-600" />
-                                            {loggedDashboardTranslations?.charts?.incomeVsExpenses || 'Income vs Expenses'}
+                                            {loggedDashboardTranslations?.charts?.budgetsByCategory || 'Budgets by Category'}
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <AreaChart />
+                                        <div className="space-y-4">
+                                            {(config.categories || []).map((cat) => {
+                                                const spent = spendByCategory.get(cat) || 0
+                                                const budget = config.budgets?.[cat] || 0
+                                                const pct = budget > 0 ? Math.min(100, Math.round((spent / budget) * 100)) : 0
+                                                return (
+                                                    <div key={cat} className="space-y-1">
+                                                        <div className="flex items-center justify-between text-sm">
+                                                            <span className="font-medium text-gray-800 dark:text-gray-100">{cat}</span>
+                                                            <span className="text-gray-600 dark:text-gray-300">{currency(spent)} / {currency(budget)}</span>
+                                                        </div>
+                                                        <div className="h-2 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                                            <div className={`${pct >= 100 ? 'bg-red-500' : 'bg-blue-500'} h-full`} style={{ width: `${pct}%` }} />
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                            {/* Add Category */}
+                                            <div className="flex flex-wrap gap-2 pt-2">
+                                                <input
+                                                    className="px-2 py-1 border rounded-md dark:bg-gray-800 dark:border-gray-700"
+                                                    placeholder={loggedDashboardTranslations?.charts?.newCategory || 'New category'}
+                                                    value={newCategory}
+                                                    onChange={(e) => setNewCategory(e.target.value)}
+                                                />
+                                                <Button onClick={handleAddCategory} disabled={isSavingConfig}>
+                                                    {loggedDashboardTranslations?.charts?.add || 'Add'}
+                                                </Button>
+                                            </div>
+                                            {/* Set Budget */}
+                                            <div className="flex flex-wrap gap-2 pt-2">
+                                                <select
+                                                    className="px-2 py-1 border rounded-md dark:bg-gray-800 dark:border-gray-700"
+                                                    value={newBudgetCategory}
+                                                    onChange={(e)=>setNewBudgetCategory(e.target.value)}
+                                                >
+                                                    <option value="">{loggedDashboardTranslations?.charts?.selectCategory || 'Select category'}</option>
+                                                    {(config.categories || []).map(cat => (
+                                                        <option key={cat} value={cat}>{cat}</option>
+                                                    ))}
+                                                </select>
+                                                <input
+                                                    type="number"
+                                                    className="px-2 py-1 border rounded-md dark:bg-gray-800 dark:border-gray-700"
+                                                    placeholder={loggedDashboardTranslations?.charts?.budgetAmount || 'Budget amount'}
+                                                    value={newBudgetAmount}
+                                                    onChange={(e)=>setNewBudgetAmount(e.target.value)}
+                                                    min="0"
+                                                />
+                                                <Button onClick={handleSetBudget} disabled={isSavingConfig || !newBudgetCategory}>
+                                                    {loggedDashboardTranslations?.charts?.setBudget || 'Set budget'}
+                                                </Button>
+                                            </div>
+                                        </div>
                                     </CardContent>
                                 </Card>
                             </div>
