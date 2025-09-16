@@ -164,7 +164,7 @@ export default function EventHistoryPage({ homePageTranslations, eventHistoryPag
 
         {/* Event History List */}
         <div className="space-y-4">
-          {events.map((event, idx) => (
+          {[...events].reverse().map((event, idx) => (
             <Card
               key={`${event.date}-${idx}`}
               className={`border-l-4 ${getStatusColor(mapCategoryToStatus(event.category))} transition-all hover:shadow-md`}

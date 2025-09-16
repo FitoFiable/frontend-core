@@ -19,6 +19,19 @@ export type userEvent = {
     date: string
 }
 
+export type userTransaction = {
+    id: string
+    type: 'expense' | 'income' | 'transfer'
+    amount: number
+    description: string
+    category: string
+    date: string
+    time: string
+    location?: string
+    method: 'card' | 'cash' | 'transfer' | 'whatsapp'
+    status: 'completed' | 'pending' | 'failed'
+}
+
 type successResponse = {
     data: any
     status: "OK"
@@ -105,6 +118,55 @@ export const apiGetEvents = async (opts?: { limit?: number, cursor?: number|null
             message: response.statusText,
             status: "ERROR"
         }
+    }
+}
+
+export const apiGetTransactions = async (opts?: { limit?: number, cursor?: number|null }): Promise<apiResponse> => {
+    const params = new URLSearchParams()
+    if (opts?.limit) params.set('limit', String(opts.limit))
+    if (opts?.cursor != null) params.set('cursor', String(opts.cursor))
+    const query = params.toString()
+    const response = await fetch(`${API_URL}/user/transactions${query ? `?${query}` : ''}`, {
+        method: "GET",
+        credentials: "include"
+    });
+
+    if (response.status === 200) {
+        return {
+            data: await response.json() as { transactions: userTransaction[], nextCursor: number | null, total: number },
+            status: "OK"
+        }
+    }
+    else if (response.status === 401) {
+        return {
+            status: "UNAUTHENTICATED"
+        }
+    }
+    else {
+        return {
+            message: response.statusText,
+            status: "ERROR"
+        }
+    }
+}
+
+export const apiAddTransactions = async (payload: { transaction?: userTransaction, transactions?: userTransaction[] }): Promise<apiResponse> => {
+    const response = await fetch(`${API_URL}/user/transactions`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(payload)
+    });
+    if (response.status === 200) {
+        return {
+            data: await response.json(),
+            status: "OK"
+        }
+    }
+    else if (response.status === 401) {
+        return { status: "UNAUTHENTICATED" }
+    }
+    else {
+        return { message: response.statusText, status: "ERROR" }
     }
 }
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import type { userData } from '@/lib/core-api';
-import { apiGetUser } from '@/lib/core-api';
+import type { userData, userTransaction } from '@/lib/core-api';
+import { apiGetUser, apiGetTransactions } from '@/lib/core-api';
 import { ArrowLeft, CreditCard, TrendingUp, TrendingDown, Calendar, MapPin, Tag, Edit, X, Eye, ChevronRight } from 'lucide-react';
 
 interface TransactionsPageProps {
@@ -10,18 +10,7 @@ interface TransactionsPageProps {
   transactionsPageTranslations?: any;
 }
 
-interface Transaction {
-  id: string;
-  type: 'expense' | 'income' | 'transfer';
-  amount: number;
-  description: string;
-  category: string;
-  date: string;
-  time: string;
-  location?: string;
-  method: 'card' | 'cash' | 'transfer' | 'whatsapp';
-  status: 'completed' | 'pending' | 'failed';
-}
+type Transaction = userTransaction
 
 export default function TransactionsPage({ homePageTranslations, transactionsPageTranslations }: TransactionsPageProps) {
   const [user, setUser] = useState<userData | null>(null);
@@ -46,153 +35,13 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
     return 'en';
   };
 
-  // Dummy transactions data
-  const initialTransactions: Transaction[] = [
-    {
-      id: '1',
-      type: 'expense',
-      amount: -45000,
-      description: 'Supermercado ABC - Compra de víveres',
-      category: 'Food & Dining',
-      date: '2024-01-15',
-      time: '14:30',
-      location: 'Bogotá, Colombia',
-      method: 'card',
-      status: 'completed'
-    },
-    {
-      id: '2',
-      type: 'expense',
-      amount: -120000,
-      description: 'Uber - Viaje al centro',
-      category: 'Transportation',
-      date: '2024-01-15',
-      time: '10:15',
-      location: 'Bogotá, Colombia',
-      method: 'card',
-      status: 'completed'
-    },
-    {
-      id: '3',
-      type: 'income',
-      amount: 2500000,
-      description: 'Salario mensual',
-      category: 'Salary',
-      date: '2024-01-14',
-      time: '09:00',
-      method: 'transfer',
-      status: 'completed'
-    },
-    {
-      id: '4',
-      type: 'expense',
-      amount: -380000,
-      description: 'Zara - Ropa de trabajo',
-      category: 'Shopping',
-      date: '2024-01-13',
-      time: '16:45',
-      location: 'Centro Comercial Andino',
-      method: 'card',
-      status: 'completed'
-    },
-    {
-      id: '5',
-      type: 'expense',
-      amount: -25000,
-      description: 'Café Juan Valdez',
-      category: 'Food & Dining',
-      date: '2024-01-13',
-      time: '11:20',
-      location: 'Calle 85',
-      method: 'whatsapp',
-      status: 'completed'
-    },
-    {
-      id: '6',
-      type: 'expense',
-      amount: -150000,
-      description: 'Farmacia Cruz Verde - Medicamentos',
-      category: 'Healthcare',
-      date: '2024-01-12',
-      time: '15:30',
-      location: 'Bogotá, Colombia',
-      method: 'card',
-      status: 'completed'
-    },
-    {
-      id: '7',
-      type: 'expense',
-      amount: -80000,
-      description: 'Netflix - Suscripción mensual',
-      category: 'Entertainment',
-      date: '2024-01-12',
-      time: '00:01',
-      method: 'card',
-      status: 'completed'
-    },
-    {
-      id: '8',
-      type: 'expense',
-      amount: -200000,
-      description: 'Servicios públicos - Enero',
-      category: 'Bills & Utilities',
-      date: '2024-01-11',
-      time: '08:00',
-      method: 'transfer',
-      status: 'completed'
-    },
-    {
-      id: '9',
-      type: 'expense',
-      amount: -95000,
-      description: 'Restaurante Andrés DC',
-      category: 'Food & Dining',
-      date: '2024-01-10',
-      time: '20:30',
-      location: 'Zona Rosa',
-      method: 'card',
-      status: 'completed'
-    },
-    {
-      id: '10',
-      type: 'transfer',
-      amount: -500000,
-      description: 'Transferencia a María García',
-      category: 'Transfer',
-      date: '2024-01-10',
-      time: '14:20',
-      method: 'transfer',
-      status: 'completed'
-    },
-    {
-      id: '11',
-      type: 'expense',
-      amount: -320000,
-      description: 'Gasolina - Estación Terpel',
-      category: 'Transportation',
-      date: '2024-01-09',
-      time: '18:45',
-      location: 'Autopista Norte',
-      method: 'card',
-      status: 'completed'
-    },
-    {
-      id: '12',
-      type: 'expense',
-      amount: -180000,
-      description: 'MercadoLibre - Productos varios',
-      category: 'Shopping',
-      date: '2024-01-08',
-      time: '12:15',
-      method: 'card',
-      status: 'pending'
+  // Load transactions from API
+  const fetchTransactions = async () => {
+    const res = await apiGetTransactions({ limit: 50 })
+    if (res.status === 'OK') {
+      setTransactions(res.data.transactions)
     }
-  ];
-
-  // Initialize transactions state
-  useEffect(() => {
-    setTransactions(initialTransactions);
-  }, []);
+  }
 
   const handleEditTransaction = (transaction: Transaction) => {
     setEditingTransaction(transaction);
@@ -265,6 +114,7 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
     const initializePage = async () => {
       setLoading(true);
       await fetchUserData();
+      await fetchTransactions();
       setLoading(false);
     };
 
