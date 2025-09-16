@@ -82,8 +82,6 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
         return <TrendingDown className="h-4 w-4 text-red-500" />;
       case 'income':
         return <TrendingUp className="h-4 w-4 text-green-500" />;
-      case 'transfer':
-        return <CreditCard className="h-4 w-4 text-blue-500" />;
       default:
         return <CreditCard className="h-4 w-4 text-gray-500" />;
     }
@@ -522,7 +520,6 @@ function EditTransactionModal({ transaction, onSave, onClose, translations, cate
             >
               <option value="expense">{translations?.types?.expense || 'Expense'}</option>
               <option value="income">{translations?.types?.income || 'Income'}</option>
-              <option value="transfer">{translations?.types?.transfer || 'Transfer'}</option>
             </select>
           </div>
 

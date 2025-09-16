@@ -73,15 +73,21 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
     }, [transactions])
 
     const spendByCategory = useMemo(() => {
-        const map = new Map<string, number>()
+        const allCategoriesMap = new Map<string, number>()
         for (const tr of transactions) {
             if (tr.amount < 0) {
                 const cat = tr.category || 'Uncategorized'
-                map.set(cat, (map.get(cat) || 0) + Math.abs(tr.amount))
+                allCategoriesMap.set(cat, (allCategoriesMap.get(cat) || 0) + Math.abs(tr.amount))
             }
         }
-        return map
-    }, [transactions])
+        // Only include user-configured categories
+        const allowed = new Set(config.categories || [])
+        const filtered = new Map<string, number>()
+        for (const [cat, value] of allCategoriesMap.entries()) {
+            if (allowed.has(cat)) filtered.set(cat, value)
+        }
+        return filtered
+    }, [transactions, config])
 
     const top3CategoriesData = useMemo(() => {
         const entries = Array.from(spendByCategory.entries())
@@ -452,3 +458,4 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
 
     );
 }
+
