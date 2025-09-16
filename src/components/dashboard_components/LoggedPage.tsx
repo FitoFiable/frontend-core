@@ -10,6 +10,9 @@ import PieChart from "./charts/pieChart";
 import AreaChart from "./charts/areaChart";
 import { MessageStatsCard, UserStatsCard, CallStatsCard, GrowthStatsCard } from "./charts/statsCard";
 import EmailManager from "./EmailManager";
+import UserInfoPage from "./UserInfoPage";
+import EmailManagementPage from "./EmailManagementPage";
+import { User, Mail } from 'lucide-react';
 
 interface LoggedPageProps {
     logoutText: string;
@@ -21,6 +24,7 @@ interface LoggedPageProps {
 export default function LoggedPage({ logoutText, user, onUserNameSet, translations }: LoggedPageProps) {
     const [currentPath, setCurrentPath] = useState<string>('');
     const [language, setLanguage] = useState<string>('');
+    const [currentPage, setCurrentPage] = useState<'dashboard' | 'userInfo' | 'emailManagement'>('dashboard');
 
     useEffect(() => {
         // Set client-side values after component mounts
@@ -31,6 +35,10 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
     }, []);
 
     const handleRefresh = () => onUserNameSet();
+
+    const handleBackToDashboard = () => setCurrentPage('dashboard');
+    const handleGoToUserInfo = () => setCurrentPage('userInfo');
+    const handleGoToEmailManagement = () => setCurrentPage('emailManagement');
 
     return (
         <div className="relative min-h-screen">
@@ -52,6 +60,19 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                     <div className="flex flex-col items-center justify-center min-h-screen">
                         <SetUserName onUserNameSet={onUserNameSet} translations={translations} />
                     </div>
+                ) : currentPage === 'userInfo' ? (
+                    <UserInfoPage 
+                        user={user} 
+                        translations={translations} 
+                        onBackToDashboard={handleBackToDashboard} 
+                    />
+                ) : currentPage === 'emailManagement' ? (
+                    <EmailManagementPage 
+                        user={user} 
+                        translations={translations} 
+                        onBackToDashboard={handleBackToDashboard}
+                        onRefresh={handleRefresh}
+                    />
                 ) : (
                     <div className="container mx-auto px-4 py-8">
                         {/* Header Section */}
@@ -64,13 +85,33 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                         className="w-16 h-16 rounded-full"
                                     />
                                     <div>
-                                        <h1 className="text-3xl font-bold text-gray-900">
+                                        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                                             Welcome back, {user.userData.userName}!
                                         </h1>
-                                        <p className="text-gray-600">Here's your dashboard overview</p>
+                                        <p className="text-gray-600 dark:text-gray-400">Here's your dashboard overview</p>
                                     </div>
                                 </div>
                                 <PhoneSetupAndVerify user={user} translations={translations} onRefresh={handleRefresh} />
+                            </div>
+                            
+                            {/* Navigation Buttons */}
+                            <div className="mt-6 flex gap-4">
+                                <Button
+                                    onClick={handleGoToUserInfo}
+                                    variant="outline"
+                                    className="flex items-center gap-2"
+                                >
+                                    <User className="h-4 w-4" />
+                                    User Information
+                                </Button>
+                                <Button
+                                    onClick={handleGoToEmailManagement}
+                                    variant="outline"
+                                    className="flex items-center gap-2"
+                                >
+                                    <Mail className="h-4 w-4" />
+                                    Email Management
+                                </Button>
                             </div>
                         </div>
 
@@ -125,47 +166,6 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                     </CardContent>
                                 </Card>
                             </div>
-                        )}
-
-                        {/* Email Management Section */}
-                        {user.userData?.phoneVerified && (
-                            <div className="mb-8">
-                                <EmailManager 
-                                    initialEmails={user.userData.allowedEmails || []} 
-                                    confirmedEmails={user.userData.confirmedEmails || []}
-                                    translations={translations}
-                                    onRefresh={handleRefresh}
-                                />
-                            </div>
-                        )}
-
-                        {/* User Info Section */}
-                        {user.userData?.phoneVerified && (
-                            <Card className="mb-8">
-                                <CardHeader>
-                                    <CardTitle>User Information</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <p className="text-sm font-medium text-gray-500">User ID</p>
-                                            <p className="text-lg font-semibold">{user.userID}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-medium text-gray-500">Username</p>
-                                            <p className="text-lg font-semibold">{user.userData.userName}</p>
-                                        </div>
-                                    </div>
-                                    <details className="mt-4">
-                                        <summary className="cursor-pointer text-sm font-medium text-gray-500 hover:text-gray-700">
-                                            View Raw Data
-                                        </summary>
-                                        <pre className="mt-2 p-4 bg-gray-100 rounded-lg text-xs overflow-auto">
-                                            {JSON.stringify(user.userData, null, 2)}
-                                        </pre>
-                                    </details>
-                                </CardContent>
-                            </Card>
                         )}
                     </div>
                 )}
