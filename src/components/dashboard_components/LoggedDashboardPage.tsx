@@ -83,6 +83,13 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
         return map
     }, [transactions])
 
+    const top3CategoriesData = useMemo(() => {
+        const entries = Array.from(spendByCategory.entries())
+        const sorted = entries.sort((a,b)=>b[1]-a[1])
+        const top3 = sorted.slice(0,3)
+        return top3.map(([name, value], idx) => ({ name, value }))
+    }, [spendByCategory])
+
     const handleAddCategory = async () => {
         const name = newCategory.trim()
         if (!name) return
@@ -113,6 +120,24 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
     const currency = (v: number) => `$${v.toLocaleString('es-CO')}`
 
     const handleRefresh = () => onUserNameSet();
+
+    const monthlySeries = useMemo(() => {
+        const map = new Map<string, { income: number; expenses: number }>()
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+        for (const tr of transactions) {
+            const d = new Date(`${tr.date}T${tr.time || '00:00'}:00`)
+            const key = months[d.getMonth()]
+            const current = map.get(key) || { income: 0, expenses: 0 }
+            if (tr.amount < 0) current.expenses += Math.abs(tr.amount)
+            else current.income += tr.amount
+            map.set(key, current)
+        }
+        // keep calendar order, only months that appear
+        const result = months
+            .filter(m => map.has(m))
+            .map(m => ({ month: m, income: map.get(m)!.income, expenses: map.get(m)!.expenses }))
+        return result
+    }, [transactions])
 
     return (
         <div className="relative min-h-screen">
@@ -373,6 +398,36 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                                                 </Button>
                                             </div>
                                         </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        )}
+
+                        {/* Charts (live or dummy fallback) */}
+                        {user.userData?.phoneVerified && (
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>{loggedDashboardTranslations?.charts?.spendingByTopCategories || 'Spending by Top Categories'}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <PieChart data={top3CategoriesData} />
+                                    </CardContent>
+                                </Card>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>{loggedDashboardTranslations?.charts?.monthlyOverview || 'Monthly Overview'}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <AreaChart data={monthlySeries} />
+                                    </CardContent>
+                                </Card>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>{loggedDashboardTranslations?.charts?.weeklySpending || 'Weekly Spending'}</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <LineChart />
                                     </CardContent>
                                 </Card>
                             </div>
