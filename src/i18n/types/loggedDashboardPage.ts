@@ -5,22 +5,6 @@ export type LoggedDashboardPageLangType = {
   emailManagement: string;
   yourTransactions: string;
   eventHistory: string;
-  meetFito: {
-    title: string;
-    description: string;
-    receiptPhotos: string;
-    screenshotReceipts: string;
-    textMessages: string;
-    audioMessages: string;
-    emailReceipts: string;
-    pdfDocuments: string;
-    comingSoon: string;
-    goToWhatsapp: string;
-    goToEmail: string;
-    emailSetupRequired: string;
-    emailSetupDescription: string;
-    emailManagementPage: string;
-  };
   developmentInProgress: {
     title: string;
     description: string;

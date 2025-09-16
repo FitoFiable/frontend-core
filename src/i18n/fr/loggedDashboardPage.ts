@@ -7,22 +7,6 @@ export const loggedDashboardPage: LoggedDashboardPageLangType = {
   emailManagement: 'Gestion Email',
   yourTransactions: 'Vos Transactions',
   eventHistory: 'Historique des Événements',
-  meetFito: {
-    title: 'Rencontrez Fito - Votre Assistant IA de Finances Personnelles',
-    description: 'Fito est un bot WhatsApp qui rend le suivi de vos dépenses quotidiennes incroyablement facile. Envoyez simplement des captures d\'écran, des images, des messages audio ou des messages texte des choses que vous payez, et Fito catégorisera et suivra automatiquement vos transactions. Vous pouvez également recevoir des transactions par email pour une gestion financière transparente.',
-    receiptPhotos: 'Photos de Reçus',
-    screenshotReceipts: 'Captures de Reçus',
-    textMessages: 'Messages Texte',
-    audioMessages: 'Messages Audio',
-    emailReceipts: 'Reçus par Email',
-    pdfDocuments: 'Documents PDF',
-    comingSoon: 'Bientôt',
-    goToWhatsapp: 'Aller à WhatsApp',
-    goToEmail: 'Aller à Email',
-    emailSetupRequired: 'Configuration Email Requise',
-    emailSetupDescription: 'Pour utiliser les reçus par email, configurez d\'abord votre email dans la',
-    emailManagementPage: 'page de Gestion Email'
-  },
   developmentInProgress: {
     title: 'Développement en Cours',
     description: 'Les données ci-dessous sont des données fictives montrant ce que vous aurez à l\'avenir. Nous construisons encore les fonctionnalités principales ! Actuellement disponible :',

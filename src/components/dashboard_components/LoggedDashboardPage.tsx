@@ -9,6 +9,7 @@ import LineChart from "./charts/lineChart";
 import PieChart from "./charts/pieChart";
 import AreaChart from "./charts/areaChart";
 import { MessageStatsCard, UserStatsCard, CallStatsCard, GrowthStatsCard } from "./charts/statsCard";
+import FitoIntroduction from "./FitoIntroduction";
 import { User, Mail, CreditCard, History, MessageSquare, Camera, Mic, FileText, Zap, TrendingUp, Shield, Clock, ExternalLink, Monitor, File, X } from 'lucide-react';
 
 interface LoggedPageProps {
@@ -124,116 +125,11 @@ export default function LoggedPage({ logoutText, user, onUserNameSet, translatio
                         {/* Fito Bot Introduction & Transaction Methods */}
                         {showFitoIntro && (
                             <div className="mb-8">
-                                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 mb-6 border border-blue-200 dark:border-blue-700/50 relative">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => setShowFitoIntro(false)}
-                                        className="absolute top-3 right-3 h-8 w-8 p-0 rounded-full hover:bg-blue-100 dark:hover:bg-blue-800/30"
-                                    >
-                                        <X className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                                    </Button>
-                                    <div className="flex items-start gap-4 mb-4">
-                                        <div className="flex-shrink-0">
-                                            <img
-                                                src="/fitofiable/fito-hello.webp"
-                                                alt="Fito AI Assistant"
-                                                className="w-24 h-24 rounded-full"
-                                            />
-                                        </div>
-                                        <div className="flex-1">
-                                            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                                                {loggedDashboardTranslations?.meetFito?.title || 'Meet Fito - Your Personal Finance AI Assistant'}
-                                            </h2>
-                                            <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                                                {loggedDashboardTranslations?.meetFito?.description || 'Fito is a WhatsApp bot that makes tracking your daily expenses incredibly easy. Simply send screenshots, images, audio messages, or text messages of things you pay for, and Fito will automatically categorize and track your transactions. You can also receive transactions via email for seamless financial management.'}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Transaction Input Methods */}
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
-                                        <div className="flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                            <Camera className="h-5 w-5 text-blue-600" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{loggedDashboardTranslations?.meetFito?.receiptPhotos || 'Receipt Photos'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                            <Monitor className="h-5 w-5 text-indigo-600" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{loggedDashboardTranslations?.meetFito?.screenshotReceipts || 'Screenshot Receipts'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                            <MessageSquare className="h-5 w-5 text-green-600" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{loggedDashboardTranslations?.meetFito?.textMessages || 'Text Messages'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                            <Mic className="h-5 w-5 text-purple-600" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{loggedDashboardTranslations?.meetFito?.audioMessages || 'Audio Messages'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                                            <Mail className="h-5 w-5 text-orange-600" />
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{loggedDashboardTranslations?.meetFito?.emailReceipts || 'Email Receipts'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 opacity-60">
-                                            <File className="h-5 w-5 text-gray-400" />
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{loggedDashboardTranslations?.meetFito?.pdfDocuments || 'PDF Documents'}</span>
-                                                <span className="text-xs text-gray-400 dark:text-gray-500">{loggedDashboardTranslations?.meetFito?.comingSoon || 'Coming Soon'}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Action Buttons */}
-                                    <div className="flex flex-col sm:flex-row gap-3 mb-4">
-                                        <Button
-                                            asChild
-                                            className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-                                        >
-                                            <a
-                                                href="https://wa.me/573108108201?text=Hi%20Fito!%20I%20want%20to%20start%20tracking%20my%20expenses."
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center justify-center gap-2"
-                                            >
-                                                <MessageSquare className="h-4 w-4" />
-                                                {loggedDashboardTranslations?.meetFito?.goToWhatsapp || 'Go to WhatsApp'}
-                                                <ExternalLink className="h-3 w-3" />
-                                            </a>
-                                        </Button>
-                                        <Button
-                                            asChild
-                                            variant="outline"
-                                            className="flex-1 border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-900/20"
-                                        >
-                                            <a
-                                                href="mailto:go@fitofiable.com?subject=Transaction%20Receipt&body=Hi%20Fito!%20Here%20is%20my%20transaction%20receipt."
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center justify-center gap-2"
-                                            >
-                                                <Mail className="h-4 w-4" />
-                                                {loggedDashboardTranslations?.meetFito?.goToEmail || 'Go to Email'}
-                                                <ExternalLink className="h-3 w-3" />
-                                            </a>
-                                        </Button>
-                                    </div>
-
-                                    <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700/50 rounded-lg p-3">
-                                        <div className="flex items-start gap-2">
-                                            <Mail className="h-4 w-4 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" />
-                                            <div>
-                                                <p className="text-sm text-orange-800 dark:text-orange-200 font-medium mb-1">
-                                                    {loggedDashboardTranslations?.meetFito?.emailSetupRequired || 'Email Setup Required'}
-                                                </p>
-                                                <p className="text-xs text-orange-700 dark:text-orange-300">
-                                                    {loggedDashboardTranslations?.meetFito?.emailSetupDescription || 'To use email receipts, first configure your email in the'}
-                                                    <a href={`/${language}/email-management`} className="underline hover:no-underline ml-1">
-                                                        {loggedDashboardTranslations?.meetFito?.emailManagementPage || 'Email Management page'}
-                                                    </a>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <FitoIntroduction 
+                                    language={language}
+                                    showCloseButton={true}
+                                    onClose={() => setShowFitoIntro(false)}
+                                />
                             </div>
                         )}
 
