@@ -28,6 +28,7 @@ export type userTransaction = {
     date: string
     time: string
     location?: string
+    mediaUrl?: string
     method: 'card' | 'cash' | 'transfer' | 'whatsapp'
     status: 'completed' | 'pending' | 'failed'
 }
@@ -288,5 +289,24 @@ export const apiSetAllowedEmails = async (allowedEmails: string[]): Promise<apiR
             message: response.statusText,
             status: "ERROR"
         }
+    }
+}
+
+export const apiDeleteUser = async (): Promise<apiResponse> => {
+    const response = await fetch(`${API_URL}/user/delete`, {
+        method: "DELETE",
+        credentials: "include"
+    });
+    if (response.status === 200) {
+        return {
+            data: await response.json(),
+            status: "OK"
+        }
+    }
+    else if (response.status === 401) {
+        return { status: "UNAUTHENTICATED" }
+    }
+    else {
+        return { message: response.statusText, status: "ERROR" }
     }
 }

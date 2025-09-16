@@ -317,6 +317,11 @@ export default function TransactionsPage({ homePageTranslations, transactionsPag
                                 <span>{transaction.location}</span>
                               </div>
                             )}
+                            {transaction.mediaUrl && (
+                              <a href={transaction.mediaUrl} target="_blank" rel="noreferrer" className="text-blue-600 dark:text-blue-400 underline">
+                                Media
+                              </a>
+                            )}
                             <span className={`font-medium px-2 py-1 rounded-full text-xs ${getStatusColor(transaction.status)} bg-opacity-10`}>
                               {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
                             </span>

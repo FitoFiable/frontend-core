@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { userData } from '@/lib/core-api';
-import { apiGetUser } from '@/lib/core-api';
+import { apiGetUser, apiSetUserName, apiDeleteUser } from '@/lib/core-api';
 import { ArrowLeft, User, Mail, Phone, CheckCircle, Clock } from 'lucide-react';
 import type { UserInfoPageLangType } from '@/i18n/types/userInfoPage';
 
@@ -14,6 +14,9 @@ interface UserInfoPageProps {
 export default function UserInfoPage({ translations, homePageTranslations }: UserInfoPageProps) {
   const [user, setUser] = useState<userData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [newName, setNewName] = useState<string>('');
+  const [savingName, setSavingName] = useState<boolean>(false);
+  const [deleting, setDeleting] = useState<boolean>(false);
 
   const fetchUserData = async () => {
     const userResponse = await apiGetUser();
@@ -40,6 +43,12 @@ export default function UserInfoPage({ translations, homePageTranslations }: Use
 
     initializePage();
   }, []);
+
+  useEffect(() => {
+    if (user?.userData?.userName) {
+      setNewName(user.userData.userName);
+    }
+  }, [user]);
 
   if (loading) {
     return (
@@ -111,9 +120,27 @@ export default function UserInfoPage({ translations, homePageTranslations }: Use
                   <label className="text-sm font-medium text-gray-500 dark:text-gray-400">
                     {translations?.basicInfo?.username || 'Username'}
                   </label>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-gray-100 mt-1">
-                    {user.userData.userName || (translations?.basicInfo?.notSet || 'Not set')}
-                  </p>
+                  <div className="mt-1 flex flex-col sm:flex-row gap-2 sm:items-center">
+                    <input
+                      className="w-full sm:w-auto flex-1 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder={translations?.basicInfo?.username || 'Username'}
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                    />
+                    <Button
+                      disabled={savingName || newName.trim().length === 0 || newName === user.userData.userName}
+                      onClick={async () => {
+                        setSavingName(true);
+                        const res = await apiSetUserName(newName.trim());
+                        if (res.status === 'OK') {
+                          await fetchUserData();
+                        }
+                        setSavingName(false);
+                      }}
+                    >
+                      {savingName ? 'Saving...' : 'Save'}
+                    </Button>
+                  </div>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -210,6 +237,38 @@ export default function UserInfoPage({ translations, homePageTranslations }: Use
             </CardContent>
           </Card>
         </div>
+
+        {/* Danger Zone */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="text-red-600 dark:text-red-400">{'Danger Zone'}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{'This will permanently delete all your data: profile, events and transactions.'}</p>
+              </div>
+              <Button
+                variant="destructive"
+                disabled={deleting}
+                onClick={async () => {
+                  const confirmed = window.confirm('Are you sure? This action cannot be undone.');
+                  if (!confirmed) return;
+                  setDeleting(true);
+                  const res = await apiDeleteUser();
+                  setDeleting(false);
+                  if (res.status === 'OK') {
+                    // After delete, refresh and redirect to root
+                    setUser(null);
+                    window.location.href = '/';
+                  }
+                }}
+              >
+                {deleting ? 'Deleting...' : 'Delete all my data'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Raw Data Section */}
         <Card className="mt-8">
