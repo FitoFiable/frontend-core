@@ -10,7 +10,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
     title: 'Come Funziona la Sincronizzazione E-mail',
     step1: {
       title: 'Passo 1: Aggiungi E-mail Autorizzate',
-      description: 'Queste sono le indirizzi e-mail che vuoi associare al tuo account Fito Fiable. Usa il modulo di gestione e-mail per aggiungerli.'
+      description: 'Queste sono le indirizzi e-mail che vuoi associare al tuo accountFito. Usa il modulo di gestione e-mail per aggiungerli.'
     },
     step2: {
       title: 'Passo 2: Conferma la Proprietà dell\'E-mail',
@@ -30,7 +30,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
   },
   gmailSetup: {
     title: 'Configura l\'Inoltro Automatico delle E-mail Bancarie',
-    description: 'Configura Gmail per inoltrare automaticamente le notifiche bancarie a Fito Fiable per un monitoraggio finanziario senza interruzioni.',
+    description: 'Configura Gmail per inoltrare automaticamente le notifiche bancarie aFito per un monitoraggio finanziario senza interruzioni.',
     step1: {
       title: 'Passo 1: Configura l\'Inoltro E-mail',
       steps: [
@@ -68,7 +68,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
     },
     success: {
       title: '✅ Tutto Pronto!',
-      description: 'Tutte le notifiche bancarie verranno ora inoltrate automaticamente a Fito Fiable.',
+      description: 'Tutte le notifiche bancarie verranno ora inoltrate automaticamente aFito.',
       time: 'Tempo totale di configurazione: 3-5 minuti'
     }
   }

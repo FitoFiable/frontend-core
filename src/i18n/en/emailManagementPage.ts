@@ -10,7 +10,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
     title: 'How Email Synchronization Works',
     step1: {
       title: 'Step 1: Add Allowed Emails',
-      description: 'These are email addresses you want to associate with your Fito Fiable account. Use the email management form to add them.'
+      description: 'These are email addresses you want to associate with yourFito account. Use the email management form to add them.'
     },
     step2: {
       title: 'Step 2: Confirm Email Ownership',
@@ -30,7 +30,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
   },
   gmailSetup: {
     title: 'Set Up Automatic Bank Email Forwarding',
-    description: 'Configure Gmail to automatically forward bank notifications to Fito Fiable for seamless financial tracking.',
+    description: 'Configure Gmail to automatically forward bank notifications toFito for seamless financial tracking.',
     step1: {
       title: 'Step 1: Configure Email Forwarding',
       steps: [
@@ -68,7 +68,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
     },
     success: {
       title: '✅ All Set!',
-      description: 'All bank notifications will now be automatically forwarded to Fito Fiable.',
+      description: 'All bank notifications will now be automatically forwarded toFito.',
       time: 'Total setup time: 3-5 minutes'
     }
   }

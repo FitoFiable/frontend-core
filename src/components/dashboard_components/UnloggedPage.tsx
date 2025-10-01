@@ -44,6 +44,7 @@ export default function UnloggedPage({ loginText }: UnloggedPageProps) {
                         <FitoIntroduction 
                             language={language}
                             showCloseButton={false}
+                            showActionButtons={false}
                         />
                     </div>
                 </div>

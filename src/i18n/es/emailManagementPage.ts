@@ -10,7 +10,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
     title: 'Cómo Funciona la Sincronización de Correos',
     step1: {
       title: 'Paso 1: Agregar Correos Permitidos',
-      description: 'Estas son las direcciones de correo que quieres asociar con tu cuenta de Fito Fiable. Usa el formulario de gestión de correos para agregarlos.'
+      description: 'Estas son las direcciones de correo que quieres asociar con tu cuenta deFito. Usa el formulario de gestión de correos para agregarlos.'
     },
     step2: {
       title: 'Paso 2: Confirmar Propiedad del Correo',
@@ -30,7 +30,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
   },
   gmailSetup: {
     title: 'Configurar Reenvío Automático de Correos Bancarios',
-    description: 'Configura Gmail para reenviar automáticamente las notificaciones bancarias a Fito Fiable para un seguimiento financiero sin interrupciones.',
+    description: 'Configura Gmail para reenviar automáticamente las notificaciones bancarias aFito para un seguimiento financiero sin interrupciones.',
     step1: {
       title: 'Paso 1: Configurar Reenvío de Correos',
       steps: [
@@ -68,7 +68,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
     },
     success: {
       title: '✅ ¡Listo!',
-      description: 'Todos los correos de notificación bancaria ahora se reenviarán automáticamente a Fito Fiable.',
+      description: 'Todos los correos de notificación bancaria ahora se reenviarán automáticamente aFito.',
       time: 'Tiempo total de configuración: 3-5 minutos'
     }
   }

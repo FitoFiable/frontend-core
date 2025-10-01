@@ -14,10 +14,11 @@ import { fitoIntroduction as ptTranslations } from "@/i18n/pt/fitoIntroduction";
 interface FitoIntroductionProps {
     language: string;
     showCloseButton?: boolean;
+    showActionButtons?: boolean;
     onClose?: () => void;
 }
 
-export default function FitoIntroduction({ language, showCloseButton = true, onClose }: FitoIntroductionProps) {
+export default function FitoIntroduction({ language, showCloseButton = true, showActionButtons = true, onClose }: FitoIntroductionProps) {
     const [isVisible, setIsVisible] = useState<boolean>(true);
 
     const getTranslations = (lang: string): FitoIntroductionLangType => {
@@ -110,39 +111,41 @@ export default function FitoIntroduction({ language, showCloseButton = true, onC
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-4">
-                <Button
-                    asChild
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-                >
-                    <a
-                        href={`https://wa.me/573108108201?text=${encodeURIComponent(translations.meetFito.whatsappMessage)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2"
+            {showActionButtons && (
+                <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                    <Button
+                        asChild
+                        className="flex-1 bg-green-600 hover:bg-green-700 text-white"
                     >
-                        <MessageSquare className="h-4 w-4" />
-                        {translations.meetFito.goToWhatsapp}
-                        <ExternalLink className="h-3 w-3" />
-                    </a>
-                </Button>
-                <Button
-                    asChild
-                    variant="outline"
-                    className="flex-1 border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-900/20"
-                >
-                    <a
-                        href={`mailto:go@fitofiable.com?subject=${encodeURIComponent(translations.meetFito.emailSubject)}&body=${encodeURIComponent(translations.meetFito.emailBody)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2"
+                        <a
+                            href={`https://wa.me/573108108201?text=${encodeURIComponent(translations.meetFito.whatsappMessage)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-2"
+                        >
+                            <MessageSquare className="h-4 w-4" />
+                            {translations.meetFito.goToWhatsapp}
+                            <ExternalLink className="h-3 w-3" />
+                        </a>
+                    </Button>
+                    <Button
+                        asChild
+                        variant="outline"
+                        className="flex-1 border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-700 dark:text-orange-400 dark:hover:bg-orange-900/20"
                     >
-                        <Mail className="h-4 w-4" />
-                        {translations.meetFito.goToEmail}
-                        <ExternalLink className="h-3 w-3" />
-                    </a>
-                </Button>
-            </div>
+                        <a
+                            href={`mailto:go@fitofiable.com?subject=${encodeURIComponent(translations.meetFito.emailSubject)}&body=${encodeURIComponent(translations.meetFito.emailBody)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-2"
+                        >
+                            <Mail className="h-4 w-4" />
+                            {translations.meetFito.goToEmail}
+                            <ExternalLink className="h-3 w-3" />
+                        </a>
+                    </Button>
+                </div>
+            )}
 
             <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-700/50 rounded-lg p-3">
                 <div className="flex items-start gap-2">

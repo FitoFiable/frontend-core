@@ -126,7 +126,7 @@ export default function EmailManagementPage({ translations, homePageTranslations
                     {translations?.emailSync?.step1?.title || 'Step 1: Add Allowed Emails'}
                   </p>
                   <p>
-                    {translations?.emailSync?.step1?.description || 'These are email addresses you want to associate with your Fito Fiable account. Use the email management form to add them.'}
+                    {translations?.emailSync?.step1?.description || 'These are email addresses you want to associate with yourFito account. Use the email management form to add them.'}
                   </p>
                 </div>
                 
@@ -187,7 +187,7 @@ export default function EmailManagementPage({ translations, homePageTranslations
               </h3>
               <div className="text-orange-800 dark:text-orange-200 space-y-4 text-sm">
                 <p className="text-base">
-                  {translations?.gmailSetup?.description || 'Configure Gmail to automatically forward bank notifications to Fito Fiable for seamless financial tracking.'}
+                  {translations?.gmailSetup?.description || 'Configure Gmail to automatically forward bank notifications toFito for seamless financial tracking.'}
                 </p>
                 
                 <div>
@@ -271,7 +271,7 @@ export default function EmailManagementPage({ translations, homePageTranslations
                     {translations?.gmailSetup?.success?.title || '✅ All Set!'}
                   </p>
                   <p className="text-orange-800 dark:text-orange-200 text-xs">
-                    {translations?.gmailSetup?.success?.description || 'All bank notifications will now be automatically forwarded to Fito Fiable.'} 
+                    {translations?.gmailSetup?.success?.description || 'All bank notifications will now be automatically forwarded toFito.'} 
                     <strong>{translations?.gmailSetup?.success?.time || 'Total setup time: 3-5 minutes'}</strong>
                   </p>
                 </div>

@@ -10,7 +10,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
     title: 'Wie E-Mail-Synchronisation funktioniert',
     step1: {
       title: 'Schritt 1: Erlaubte E-Mails hinzufügen',
-      description: 'Dies sind E-Mail-Adressen, die Sie mit Ihrem Fito Fiable-Konto verknüpfen möchten. Verwenden Sie das E-Mail-Verwaltungsformular, um sie hinzuzufügen.'
+      description: 'Dies sind E-Mail-Adressen, die Sie mit IhremFito-Konto verknüpfen möchten. Verwenden Sie das E-Mail-Verwaltungsformular, um sie hinzuzufügen.'
     },
     step2: {
       title: 'Schritt 2: E-Mail-Eigentum bestätigen',
@@ -30,7 +30,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
   },
   gmailSetup: {
     title: 'Automatische Bank-E-Mail-Weiterleitung einrichten',
-    description: 'Konfigurieren Sie Gmail, um Bank-Benachrichtigungen automatisch an Fito Fiable weiterzuleiten für nahtlose Finanzverfolgung.',
+    description: 'Konfigurieren Sie Gmail, um Bank-Benachrichtigungen automatisch anFito weiterzuleiten für nahtlose Finanzverfolgung.',
     step1: {
       title: 'Schritt 1: E-Mail-Weiterleitung konfigurieren',
       steps: [
@@ -68,7 +68,7 @@ export const emailManagementPage: EmailManagementPageLangType = {
     },
     success: {
       title: '✅ Alles bereit!',
-      description: 'Alle Bank-Benachrichtigungen werden jetzt automatisch an Fito Fiable weitergeleitet.',
+      description: 'Alle Bank-Benachrichtigungen werden jetzt automatisch anFito weitergeleitet.',
       time: 'Gesamte Einrichtungszeit: 3-5 Minuten'
     }
   }
